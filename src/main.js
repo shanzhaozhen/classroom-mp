@@ -3,6 +3,8 @@ import App from './App'
 
 import store from './store'
 
+import './style/weui.css'
+
 Vue.config.productionTip = false
 
 App.mpType = 'app'
