@@ -1,11 +1,13 @@
 <template>
   <div class="my-container">
     <div class="user-info">
-      <div class="avatar" @click="toPage('../login/main')">
+      <div class="avatar">
         <img src="/static/images/user.png">
       </div>
-      <div class="username">username</div>
-      <button class="modify-btn" @click="toPage('../myinfo/main')">修改个人资料</button>
+      <div class="username" v-if="isLogin">username</div>
+      <div class="username" v-else>(未登录)</div>
+      <button class="modify-btn" @click="toPage('../myinfo/main')" v-if="isLogin">修改个人资料</button>
+      <button class="login-btn"  @click="toPage('../login/main')" v-else>登陆</button>
     </div>
   </div>
 </template>
@@ -16,6 +18,7 @@ export default {
   },
   data () {
     return {
+      isLogin: false
     }
   },
   methods: {
@@ -60,5 +63,15 @@ export default {
     font-size: 30rpx;
     line-height: 55rpx;
     color: #ffffff;
+  }
+
+  .login-btn {
+    color: #ffffff;
+    width: 250rpx;
+    height: 75rpx;
+    font-size: 35rpx;
+    line-height: 75rpx;
+    margin: 20rpx 0 30rpx 0;
+    background-color: #55C8F4;
   }
 </style>

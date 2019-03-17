@@ -1,7 +1,7 @@
 <template>
   <div class="classroom-container">
     <div class="classroom-list">
-      <div class="classroom-item" @click="toPage('id')">
+      <div class="classroom-item" @click="toDetailPage(1)">
         <div class="classroom-content">
           <div class="classroom-info">
             <div class="classroom-name">17届软件工程2班</div>
@@ -50,8 +50,8 @@
       }
     },
     methods: {
-      toPage (id) {
-        const url = '../classroomdetail/main'
+      toDetailPage (id) {
+        const url = '../classroomdetail/main?id=' + id
         mpvue.navigateTo({ url })
       }
     }
