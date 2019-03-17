@@ -1,11 +1,11 @@
 <template>
   <div class="my-container">
     <div class="user-info">
-      <div class="avatar" @click="toLoginPage">
+      <div class="avatar" @click="toPage('../login/main')">
         <img src="/static/images/user.png">
       </div>
       <div class="username">username</div>
-      <button class="modify-btn">修改个人资料</button>
+      <button class="modify-btn" @click="toPage('../myinfo/main')">修改个人资料</button>
     </div>
   </div>
 </template>
@@ -19,8 +19,7 @@ export default {
     }
   },
   methods: {
-    toLoginPage () {
-      const url = '../login/main'
+    toPage (url) {
       mpvue.navigateTo({ url })
     }
   }
@@ -45,6 +44,7 @@ export default {
     width: 140rpx;
     height: 140rpx;
     border-radius: 50%;
+    border: 1rpx solid #eee;
   }
 
   .username {

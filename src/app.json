@@ -1,8 +1,13 @@
 {
   "pages": [
     "pages/index/main",
+    "pages/classroom/main",
     "pages/my/main",
-    "pages/login/main"
+    "pages/myinfo/main",
+    "pages/login/main",
+    "pages/register/main",
+    "pages/search/main",
+    "pages/addclassroom/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -22,6 +27,11 @@
       "iconPath": "static/tabs/home.png",
       "selectedIconPath": "static/tabs/home-active.png"
     }, {
+      "text": "班级",
+      "pagePath": "pages/classroom/main",
+      "iconPath": "static/tabs/orders.png",
+      "selectedIconPath": "static/tabs/orders-active.png"
+    }, {
       "text": "我的",
       "pagePath": "pages/my/main",
       "iconPath": "static/tabs/orders.png",
@@ -33,6 +43,11 @@
       "pagePath": "pages/index/main",
       "icon": "static/tabs/home.png",
       "activeIcon": "static/tabs/home-active.png"
+    }, {
+      "text": "班级",
+      "pagePath": "pages/classroom/main",
+      "iconPath": "static/tabs/orders.png",
+      "selectedIconPath": "static/tabs/orders-active.png"
     }, {
       "name": "我的",
       "pagePath": "pages/my/main",

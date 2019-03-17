@@ -10,9 +10,7 @@
       <div class="input-box">
         <input type="password" placeholder="请输入密码" v-model="password"/>
       </div>
-      <button class="login-btn mt-50 mb-35 bg-aqua">登陆</button>
-      <button class="login-btn mb-35 bg-orange" @click="toRegisterPage">注册</button>
-      <button class="login-btn mb-35 bg-green">关联微信登陆</button>
+      <button class="login-btn mb-35 bg-orange">开始注册</button>
     </div>
   </div>
 </template>
@@ -28,15 +26,22 @@ export default {
     }
   },
   methods: {
-    toRegisterPage () {
-      const url = '../register/main'
+    toLoginPage () {
+      const url = '../login/main'
       mpvue.navigateTo({ url })
     }
   }
 }
 </script>
 
-<style scoped>
+<style>
+  /*page {*/
+    /*background-color: #eeeeee;*/
+  /*}*/
+
+  /*.login-container {*/
+    /*padding: 20rpx 20rpx 15rpx 20rpx;*/
+  /*}*/
 
   .from-box {
     padding: 0rpx 40rpx 15rpx 40rpx;
@@ -56,16 +61,30 @@ export default {
     height: 230rpx;
   }
 
+  .border-bottom {
+    border-bottom: 1px solid #eeeeee;
+  }
+
   .input-box {
     width: 100%;
     padding-bottom: 18rpx;
     border-bottom: 1px solid #eeeeee;
     margin: 15rpx 0;
   }
+/*
+  .input-box span {
+    float: left;
+  }
 
+  .input-box input {
+    float: left;
+    font-size: 1em;
+  }
+*/
   .input-box img {
     width: 25rpx;
     height: 25rpx;
+    /*width: 15%;*/
     float: left;
   }
 
