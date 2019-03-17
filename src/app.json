@@ -1,13 +1,14 @@
 {
   "pages": [
     "pages/index/main",
+    "pages/addclassroom/main",
+    "pages/search/main",
     "pages/classroom/main",
+    "pages/classroomdetail/main",
     "pages/my/main",
     "pages/myinfo/main",
     "pages/login/main",
-    "pages/register/main",
-    "pages/search/main",
-    "pages/addclassroom/main"
+    "pages/register/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

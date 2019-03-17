@@ -6,7 +6,7 @@
           <img src="/static/icon/check-circle.png">
         </div>
         <div class="item-content">
-          <p class="title-big">创建一个新班级<img src="/static/icon/right-circle.png"></p>
+          <p class="title-big">创建一个新班级<img src="/static/icon/right-circle-black.png"></p>
           <p class="title-small">创建班级，管理同学们的出勤和作业</p>
         </div>
       </div>
@@ -15,7 +15,7 @@
           <img src="/static/icon/check-circle.png">
         </div>
         <div class="item-content">
-          <p class="title-big">加入一个班级<img src="/static/icon/right-circle.png"></p>
+          <p class="title-big">加入一个班级<img src="/static/icon/right-circle-black.png"></p>
           <p class="title-small">加入班级，进入班级大家庭</p>
         </div>
       </div>
@@ -27,7 +27,7 @@
           <img src="/static/icon/check-circle.png">
         </div>
         <div class="item-content">
-          <p class="title-big">发布一份作业任务<img src="/static/icon/right-circle.png"></p>
+          <p class="title-big">发布一份作业任务<img src="/static/icon/right-circle-black.png"></p>
           <p class="title-small">发起作业任务，让同学们按时提交作业</p>
         </div>
       </div>
@@ -36,7 +36,7 @@
           <img src="/static/icon/check-circle.png">
         </div>
         <div class="item-content">
-          <p class="title-big">发布一次考勤任务<img src="/static/icon/right-circle.png"></p>
+          <p class="title-big">发布一次考勤任务<img src="/static/icon/right-circle-black.png"></p>
           <p class="title-small">发起考勤任务，检查同学们的出勤状况</p>
         </div>
       </div>
