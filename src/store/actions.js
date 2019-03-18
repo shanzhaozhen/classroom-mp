@@ -17,9 +17,7 @@ export default {
     userInfo.username = userInfo.username.trim()
     return new Promise((resolve, reject) => {
       login(userInfo).then(data => {
-        console.log(data)
-        console.log(data[TOKEN_KEY])
-        commit('SET_TOKEN', data[TOKEN_KEY])
+        commit(SET_TOKEN, data[TOKEN_KEY])
         resolve()
       }).catch(error => {
         reject(error.data)

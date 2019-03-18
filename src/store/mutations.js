@@ -2,24 +2,15 @@
  * 直接更新state的多个方法对象
  */
 import {
-  SET_TOKEN
+  SET_TOKEN,
+  SET_USERINFO
 } from './mutations-type'
 
 export default {
-  [SET_TOKEN] (state, { token }) {
+  [SET_TOKEN]: (state, { token }) => {
     state.token = token
   },
-
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
-  },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
+  [SET_USERINFO]: (state, { userinfo }) => {
+    state.userinfo = userinfo
   }
 }

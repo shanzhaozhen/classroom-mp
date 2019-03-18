@@ -46,8 +46,6 @@ export default {
             delta: 1
           })
         }, 3000)
-        console.log(this.$store)
-        console.log(this.$store.getters.token)
       }).catch((error) => {
         mpvue.showToast({
           title: error.msg,

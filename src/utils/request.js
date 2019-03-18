@@ -1,7 +1,11 @@
+import store from '@/store'
+
 const api = 'http://127.0.0.1:8090/classroom'
+
 const TOKEN_HEADER = 'Class-Token'
 
 export function http (url, type = 'GET', data = {}) {
+  // console.log(store.getters.token)
   return new Promise((resolve, reject) => {
     // 执行异步请求
     if (type === 'GET' || type === 'get') {
@@ -25,10 +29,10 @@ export function http (url, type = 'GET', data = {}) {
           [TOKEN_HEADER]: ''
         },
         success (res) {
-          resolve(res)
+          resolve(res.data)
         },
         fail (error) {
-          reject(error)
+          reject(error.data)
         }
       })
     } else {
@@ -41,10 +45,42 @@ export function http (url, type = 'GET', data = {}) {
           [TOKEN_HEADER]: ''
         },
         success (res) {
-          resolve(res)
+          resolve(res.data)
         },
         fail (error) {
-          reject(error)
+          if (error.status === 401) {
+            /**
+             * (4010, "密码账号认证出错")
+             * (4011, "token签名异常")-
+             * (4012, "token格式不正确")
+             * (4013, "token已过期")
+             * (4014, "不支持该token")
+             * (4015, "token参数异常")
+             * (4016, "token错误")
+             */
+            let msg
+            if (error.code === 4010) {
+              msg = '账号或密码错误'
+            } else if (error.code > 4010 && error.code <= 4016) {
+              msg = '登陆过期或超时'
+            }
+            mpvue.showToast({
+              title: msg,
+              icon: 'none',
+              duration: 3000,
+              mask: true
+            })
+            store.dispatch('LogOut')
+          } else {
+            mpvue.showToast({
+              title: error.message,
+              icon: 'none',
+              duration: 3000,
+              mask: true
+            })
+            return Promise.reject(error)
+          }
+          reject(error.data)
         }
       })
     }
