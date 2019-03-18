@@ -10,12 +10,13 @@
       <div class="input-box">
         <input type="password" placeholder="请输入密码" v-model="password"/>
       </div>
-      <button class="login-btn mb-35 bg-orange">开始注册</button>
+      <button class="login-btn mb-35 bg-orange" @click="register">开始注册</button>
     </div>
   </div>
 </template>
 
 <script>
+import { http } from '@/utils/request'
 export default {
   components: {
   },
@@ -29,6 +30,38 @@ export default {
     toLoginPage () {
       const url = '../login/main'
       mpvue.navigateTo({ url })
+    },
+    register () {
+      http('register', 'post', {
+        username: this.username,
+        password: this.password
+      }).then((response) => {
+        // console.log(response)
+        let res = response.data
+        console.log(res)
+        if (res.success === true) {
+          mpvue.showToast({
+            title: '注册成功',
+            duration: 3000,
+            mask: true
+          })
+          setTimeout(() => {
+            mpvue.navigateBack({
+              delta: 1
+            })
+          }, 3000)
+        } else {
+          mpvue.showToast({
+            title: res.msg,
+            icon: 'none',
+            duration: 3000,
+            mask: true
+          })
+        }
+      })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 }
