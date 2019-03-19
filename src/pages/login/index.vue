@@ -10,14 +10,15 @@
       <div class="input-box">
         <input type="password" placeholder="请输入密码" v-model="loginForm.password"/>
       </div>
-      <button class="login-btn mt-50 mb-35 bg-aqua" @click="login">登陆</button>
+      <button class="login-btn mt-50 mb-35 bg-aqua" open-type="getUserInfo" @click="login">登陆</button>
       <button class="login-btn mb-35 bg-orange" @click="toRegisterPage">注册</button>
-      <!--<button open-type="getUserInfo" class="login-btn mb-35 bg-green" @getuserinfo="getWechatUserInfo">关联微信登陆</button>-->
+      <button open-type="getUserInfo" class="login-btn mb-35 bg-green" @getuserinfo="getWechatUserInfo">关联微信登陆</button>
     </div>
   </div>
 </template>
 
 <script>
+import { getOpenidByCode } from '@/api/login'
 export default {
   components: {
   },
@@ -34,7 +35,15 @@ export default {
       const url = '../register/main'
       mpvue.navigateTo({ url })
     },
-    login () {
+    login (data) {
+      let tempUserInfo
+      console.log(data.mp)
+      if (data.mp.detail.rawData) {
+        tempUserInfo = data.mp.detail
+      }
+
+      console.log(tempUserInfo)
+
       this.$store.dispatch('Login', this.loginForm).then(() => {
         mpvue.showToast({
           title: '登陆成功',
@@ -46,6 +55,12 @@ export default {
             delta: 1
           })
         }, 3000)
+        this.$store.dispatch('GetUserInfo').then((data) => {
+          if (!data.fullName && !data.nickname) {
+            console.log('进来了')
+            document.getElementById('getUserInfo-btn').click()
+          }
+        })
       }).catch((error) => {
         mpvue.showToast({
           title: error.msg,
@@ -56,23 +71,20 @@ export default {
       })
     },
     getWechatUserInfo (data) {
-      console.log(data)
       if (data.mp.detail.rawData) {
-        // mpvue.login({
-        //   success (res) {
-        //     if (res.code) {
-        //       // 发起网络请求
-        //       wx.request({
-        //         url: 'https://test.com/onLogin',
-        //         data: {
-        //           code: res.code
-        //         }
-        //       })
-        //     } else {
-        //       console.log('登录失败！' + res.errMsg)
-        //     }
-        //   }
-        // })
+        console.log(data.mp.detail.userInfo)
+        this.$store.dispatch('SetWechatUserInfo', data.mp.detail.userInfo)
+        mpvue.login({
+          success: (res) => {
+            if (res.code) {
+              getOpenidByCode({ code: res.code }).then((data) => {
+                this.$store.dispatch('SetOpenId', data.openId)
+              })
+            } else {
+              console.log('登录失败！' + res.errMsg)
+            }
+          }
+        })
       } else {
         mpvue.showToast({
           title: '获取用户数据失败',
@@ -133,6 +145,10 @@ export default {
     height: 75rpx;
     font-size: 35rpx;
     line-height: 75rpx;
+  }
+
+  .hidden-btn {
+    display: none;
   }
 
 </style>

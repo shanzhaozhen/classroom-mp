@@ -4,5 +4,7 @@
 export default {
   isLogin: false,
   token: '',
-  userInfo: {}
+  openId: '',
+  userInfo: {},
+  wechatUserInfo: {}
 }

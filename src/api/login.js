@@ -11,8 +11,21 @@ export function login ({ username, password, rememberMe }) {
   })
 }
 
+export function wechatLogin (code) {
+  return http('wechat/login', 'post', code)
+}
+
 export function getUserInfo () {
   return http('admin/user/info', 'get')
+}
+
+export function updateUserInfo () {
+  return http('admin/user/update', 'get')
+}
+
+export function getOpenidByCode (data) {
+  console.log(data)
+  return http('wechat/openid', 'get', data)
 }
 
 // export function logout() {

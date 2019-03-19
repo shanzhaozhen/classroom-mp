@@ -10,7 +10,7 @@
 	},
 	"miniprogramRoot": "dist/wx/",
 	"compileType": "miniprogram",
-	"appid": "wx10c947640966fae0",
+	"appid": "wx9fb2dacbf0e32a67",
 	"projectname": "classroom-mp",
 	"condition": {
 		"search": {
