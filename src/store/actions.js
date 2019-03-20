@@ -15,7 +15,7 @@ const TOKEN_KEY = 'access-token'
 
 export default {
   SetToken ({ commit }, token) {
-    commit(SET_TOKEN, {token})
+    commit(SET_TOKEN, token)
   },
   Login ({ commit }, userInfo) {
     userInfo.username = userInfo.username.trim()
@@ -29,7 +29,13 @@ export default {
       })
     })
   },
-
+  WechatLogin ({ commit }, token) {
+    return new Promise((resolve) => {
+      commit(SET_IS_LOGIN, true)
+      commit(SET_TOKEN, token)
+      resolve()
+    })
+  },
   // 获取用户信息
   GetUserInfo ({ commit }) {
     return new Promise((resolve, reject) => {
@@ -63,16 +69,15 @@ export default {
     })
   },
   // 获取用户信息
-  UpdateUserInfo ({ commit }) {
+  UpdateUserInfo ({ commit }, wechatUserInfo) {
     return new Promise((resolve, reject) => {
-      updateUserInfo().then(data => {
+      updateUserInfo(wechatUserInfo).then(data => {
         resolve(data)
       }).catch(error => {
         reject(error)
       })
     })
   },
-
   // 登出
   LogOut ({ commit }) {
     return new Promise(resolve => {

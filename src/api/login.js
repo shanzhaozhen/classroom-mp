@@ -19,12 +19,11 @@ export function getUserInfo () {
   return http('admin/user/info', 'get')
 }
 
-export function updateUserInfo () {
-  return http('admin/user/update', 'get')
+export function updateUserInfo (wechatUserInfo) {
+  return http('wechat/updateuser', 'put', wechatUserInfo)
 }
 
 export function getOpenidByCode (data) {
-  console.log(data)
   return http('wechat/openid', 'get', data)
 }
 

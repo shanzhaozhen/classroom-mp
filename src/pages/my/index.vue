@@ -7,7 +7,7 @@
       <div class="username" v-if="isLogin">username</div>
       <div class="username" v-else>(未登录)</div>
       <button class="modify-btn" @click="toPage('../myinfo/main')" v-if="isLogin">修改个人资料</button>
-      <button class="login-btn" open-type="getUserInfo" v-else>登陆</button>
+      <button class="login-btn" open-type="getUserInfo" @getuserinfo="getWechatUserInfo" v-else>登陆</button>
     </div>
   </div>
 </template>
@@ -36,7 +36,20 @@ export default {
           success: (res) => {
             if (res.code) {
               wechatLogin({ code: res.code }).then((data) => {
-                this.$store.dispatch('SetOpenId', data.openId)
+                if (data.success === true) {
+                  this.$store.dispatch('WechatLogin', data.token).then(() => {
+                    this.$store.dispatch('GetUserInfo').then((data) => {
+                      if (!data.fullName || !data.fullName) {
+                        this.$store.dispatch('UpdateUserInfo', this.$store.getters.wechatUserInfo).then((data) => {
+                        })
+                      }
+                    })
+                  })
+                } else {
+                  this.toPage('../login/main')
+                }
+                console.log(data)
+                // this.$store.dispatch('SetOpenId', data.openId)
               })
             } else {
               console.log('登录失败！' + res.errMsg)

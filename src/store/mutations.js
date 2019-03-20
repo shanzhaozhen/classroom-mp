@@ -15,7 +15,6 @@ export default {
   },
   [SET_TOKEN]: (state, token) => {
     state.token = token
-    console.log(state)
   },
   [SET_USER_INFO]: (state, { userInfo }) => {
     state.userInfo = userInfo
@@ -25,6 +24,5 @@ export default {
   },
   [SET_WECHAT_USER_INFO]: (state, wechatUserInfo) => {
     state.wechatUserInfo = wechatUserInfo
-    console.log(state)
   }
 }
