@@ -22,8 +22,8 @@
     </div>
     <div class="more-pc">更多功能（请使用PC端）</div>
     <div class="card-list">
-      <!--<div class="card-item" @click="alertTips">-->
-      <div class="card-item" @click="toPage('../addhomework/main')">
+      <div class="card-item" @click="alertTips">
+      <!--<div class="card-item" @click="toPage('../addhomework/main')">-->
         <div class="item-img bg-orange">
           <img src="/static/icon/check-circle.png">
         </div>

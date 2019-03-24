@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="sumbit-homework">
-      <button class="back-btn bg-purple">交作业</button>
+      <button class="back-btn bg-purple" @click="toPage('../addhomework/main?id=' + detail.id)">交作业</button>
     </div>
   </div>
   <div v-else>

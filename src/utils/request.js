@@ -94,3 +94,26 @@ function errorHandle (error, reject) {
   }
   reject(error.data)
 }
+
+export function upload (filePath) {
+  return new Promise((resolve, reject) => {
+    mpvue.uploadFile({
+      url: api + '/upload', // 仅为示例，非真实的接口地址
+      filePath: filePath,
+      name: 'file',
+      formData: {
+        // user: 'test'
+      },
+      header: {
+        'content-type': 'application/json', // 默认值
+        [TOKEN_HEADER]: store.state.token
+      },
+      success (res) {
+        resolve(JSON.parse(res.data))
+      },
+      fail (err) {
+        reject(err)
+      }
+    })
+  })
+}

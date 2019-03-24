@@ -3,13 +3,13 @@
     <div class="form-box">
       <div class="input-box">
         <span>作业内容：</span>
-        <textarea placeholder="请填写班级概述" rows="6" v-model="homeworkData.outline"></textarea>
+        <textarea placeholder="请填写班级概述" rows="6" v-model="homeworkData.content"></textarea>
       </div>
       <div class="input-box">
-        <span>附件：</span>
-        <div></div>
-        <button class="file-btn bg-orange" @click="upload">选择附件</button>
+        <span>附件：<button class="file-btn bg-orange" @click="upload">选择附件</button></span>
+        <div class="file-list" v-if="fileName">{{fileName}}</div>
       </div>
+      <div></div>
     </div>
     <button class="add-btn mt-50 mb-35 bg-aqua" @click="createHomework">提交</button>
   </div>
@@ -17,6 +17,7 @@
 
 <script>
 import { sumbitHomework } from '@/api/classroom'
+import { upload } from '@/utils/request'
 
 export default {
   components: {
@@ -24,13 +25,19 @@ export default {
   data () {
     return {
       homeworkData: {
-        content: ''
-      }
+        homeworkTaskId: undefined,
+        content: '',
+        fileUrl: ''
+      },
+      fileName: ''
     }
+  },
+  onLoad (options) {
+    this.homeworkData.homeworkTaskId = options.id
   },
   methods: {
     createHomework () {
-      if (!this.classroom.content) {
+      if (!this.homeworkData.content) {
         mpvue.showToast({
           title: '字段不能为空',
           icon: 'none',
@@ -38,7 +45,7 @@ export default {
           mask: true
         })
       } else {
-        sumbitHomework(this.classroom).then((data) => {
+        sumbitHomework(this.homeworkData).then((data) => {
           if (data.success === true) {
             mpvue.showToast({
               title: data.msg,
@@ -62,25 +69,28 @@ export default {
     },
     upload () {
       mpvue.chooseMessageFile({
-        count: 10,
+        count: 1,
         // type: 'file',
-        success (res) {
+        success: (res) => {
           // tempFilePath可以作为img标签的src属性显示图片
           const tempFilePaths = res.tempFiles
-          console.log(res)
-          console.log(tempFilePaths)
-
-          mpvue.uploadFile({
-            url: 'http://127.0.0.1:8090/classroom/upload', // 仅为示例，非真实的接口地址
-            filePath: tempFilePaths[0],
-            name: 'file',
-            formData: {
-              user: 'test'
-            },
-            success (res) {
-              const data = res.data
-              console.log(data)
-              // do something
+          upload(tempFilePaths[0].path).then((data) => {
+            console.log(data)
+            if (data.success === true) {
+              this.fileName = tempFilePaths[0].name
+              this.homeworkData.fileUrl = data.relativePath
+              mpvue.showToast({
+                title: '上传成功',
+                duration: 1500,
+                mask: true
+              })
+            } else {
+              mpvue.showToast({
+                title: '上传失败',
+                icon: 'none',
+                duration: 1500,
+                mask: true
+              })
             }
           })
         }
@@ -137,6 +147,7 @@ export default {
   }
 
   .file-btn {
+    float: right;
     color: #ffffff;
     width: 180rpx;
     height: 45rpx;
