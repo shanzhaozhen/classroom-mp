@@ -20,7 +20,7 @@ export function getUserInfo () {
 }
 
 export function updateUserInfo (wechatUserInfo) {
-  return http('wechat/updateuser', 'put', wechatUserInfo)
+  return http('wechat/update/userinfo', 'put', wechatUserInfo)
 }
 
 export function getOpenidByCode (data) {

@@ -1,67 +1,80 @@
 <template>
   <div class="classroom-container">
-    <div class="classroom-list">
-      <div class="classroom-item" @click="toDetailPage(1)">
+    <div class="classroom-list" v-if="isLogin">
+      <div class="classroom-item" @click="toDetailPage(item.id)" v-for="(item, index) in list" :key="index">
         <div class="classroom-content">
-          <div class="classroom-info">
-            <div class="classroom-name">17届软件工程2班</div>
-            <div class="classroom-desc">sadfasdfasdfasdfasdfasdfasddfasdfasdffffffffffffffffssssssssssssssssssffffffffffffsssssssssssfffffffff</div>
+          <div class="classroom-info" >
+            <div class="classroom-name">{{item.name}}</div>
+            <div class="classroom-desc">{{item.outline}}</div>
           </div>
-          <div class="classroom-date">加入时间：2017-10-12 12:12:12</div>
         </div>
         <div class="classroom-img bg-aqua">
           <img src="/static/icon/right-circle-write.png">
         </div>
+        <div class="classroom-date">创建时间：{{item.createdDate}}</div>
       </div>
-      <div class="classroom-item">
-        <div class="classroom-content">
-          <div class="classroom-info">
-            <div class="classroom-name">17届软件工程2班</div>
-            <div class="classroom-desc">sadfasdfasdfasdfasdfasdfasddfasdfasdffffffffffffffffssssssssssssssssssffffffffffffsssssssssssfffffffff</div>
-          </div>
-          <div class="classroom-date">加入时间：2017-10-12 12:12:12</div>
-        </div>
-        <div class="classroom-img bg-aqua">
-          <img src="/static/icon/right-circle-write.png">
-        </div>
-      </div>
-      <div class="classroom-item">
-        <div class="classroom-content">
-          <div class="classroom-info">
-            <div class="classroom-name">17届软件工程2班</div>
-            <div class="classroom-desc">sadfasdfasdfasdfasdfasdfasddfasdfasdffffffffffffffffssssssssssssssssssffffffffffffsssssssssssfffffffff</div>
-          </div>
-          <div class="classroom-date">加入时间：2017-10-12 12:12:12</div>
-        </div>
-        <div class="classroom-img bg-aqua">
-          <img src="/static/icon/right-circle-write.png">
-        </div>
-      </div>
+    </div>
+    <div class="no-login" v-else>
+      尚未登陆，请先登陆
+      <button class="login-btn bg-aqua" @click="toPage('../login/main')">登陆</button>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    components: {
+import { mapGetters } from 'vuex'
+import { myClassroom } from '@/api/classroom'
+export default {
+  components: {
+  },
+  computed: {
+    ...mapGetters(['isLogin'])
+  },
+  data () {
+    return {
+      list: []
+    }
+  },
+  onShow () {
+    if (this.isLogin) {
+      this.getList()
+    }
+  },
+  methods: {
+    getList () {
+      myClassroom().then((data) => {
+        console.log(data)
+        this.list = data
+      })
     },
-    data () {
-      return {
-      }
+    toPage (url) {
+      mpvue.navigateTo({ url })
     },
-    methods: {
-      toDetailPage (id) {
-        const url = '../classroomdetail/main?id=' + id
-        mpvue.navigateTo({ url })
-      }
+    toDetailPage (id) {
+      const url = '../classroomdetail/main?id=' + id
+      this.toPage(url)
     }
   }
+}
 </script>
 
 <style>
 
   page {
     background-color: #eeeeee;
+  }
+
+  .no-login {
+    text-align: center;
+    margin-top: 45%;
+  }
+
+  .login-btn {
+    color: #ffffff;
+    width: 35%;
+    height: 75rpx;
+    font-size: 35rpx;
+    line-height: 75rpx;
   }
 
   .classroom-list {
@@ -121,9 +134,10 @@
   }
 
   .classroom-date {
+    position: absolute;
+    bottom: 10rpx;
+    left: 15rpx;
     border-top: 1rpx solid #eeeeee;
-    padding-top: 5rpx;
-    margin-top: 5rpx;
     font-size: 25rpx;
     color: #999999;
   }

@@ -2,10 +2,11 @@
  * 基于state的getter计算属性对象
  */
 export default {
-  sidebar: state => state.app.sidebar,
-  device: state => state.app.device,
-  token: state => state.user.token,
-  avatar: state => state.user.avatar,
-  name: state => state.user.name,
-  roles: state => state.user.roles
+  isLogin: state => state.isLogin,
+  token: state => state.userInfo.token,
+  nickName: state => state.userInfo.nickName,
+  avatarUrl: state => state.userInfo.avatarUrl,
+  roles: state => state.userInfo.roles,
+  userInfo: state => state.userInfo,
+  wechatUserInfo: state => state.wechatUserInfo
 }

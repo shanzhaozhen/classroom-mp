@@ -1,137 +1,150 @@
 <template>
-  <div class="classroom-detail-container">
+  <div class="classroom-detail-container" v-if="isHave">
     <div class="classroom-info">
-      <div class="classroom-name">2年B班</div>
-      <div class="classroom-desc">fffffffffffffasddddddddddsfasdfasdfasfasdfasdfasdfsfasfasdffasdfasdfasdafsdfdddddddddddfadfasdfasd</div>
+      <div class="classroom-name">{{detail.name}}</div>
+      <div class="classroom-desc">{{detail.outline}}</div>
       <div class="splice-line"></div>
       <div class="user-info">
         <div class="avatar">
-          <img src="/static/images/user.png">
+          <img :src="detail.headmasterInfo.avatarUrl">
         </div>
-        <span class="username">username</span>
-        <div class="create-date">创建于：2018-12-12 12:12:12</div>
+        <span class="username">{{detail.headmasterInfo.nickName}}</span>
+        <div class="create-date">创建于：{{detail.createdDate}}</div>
       </div>
     </div>
     <div class="classroom-content">
       <div class="swit-bar">
         <div :class="{'bar': true, 'bar-active': show === 1}" @click="switBar(1)">作业</div>
-        <div :class="{'bar': true, 'bar-active': show === 2}" @click="switBar(2)">任务</div>
+        <div :class="{'bar': true, 'bar-active': show === 2}" @click="switBar(2)">签到</div>
       </div>
       <div class="classroom-homework" v-show="show === 1">
-        <div class="homework-item">
-          <div class="homework-content">
-            <div class="homework-name">玩成</div>
-            <div class="homework-desc">fsadfasdfsadfasdfasdfasdfasdfasdfasfvfgsdfasdfsdgsafdsafdsafsdafsadfdsafsdfasdf</div>
-          </div>
-          <div class="homework-dete">
-            完成时间：2018年12月12日-2018年12月12日
-          </div>
-        </div>
-        <div class="homework-item">
-          <div class="homework-content">
-            <div class="homework-name">玩成</div>
-            <div class="homework-desc">fsadfasdfsadfasdfasdfasdfasdfasdfasfvfgsdfasdfsdgsafdsafdsafsdafsadfdsafsdfasdf</div>
-          </div>
-          <div class="homework-dete">
-            完成时间：2018年12月12日-2018年12月12日
+        <div v-if="homeworkTaskList.length > 0">
+          <div class="homework-item" v-for="(homeworkTask, index) in homeworkTaskList" :key="index" @click="toPage('../homeworkdetail/main?id=' + homeworkTask.id)">
+            <div class="homework-content">
+              <div class="homework-name">{{homeworkTask.name}}</div>
+              <div class="homework-desc">{{homeworkTask.outline}}</div>
+            </div>
+            <div class="homework-dete">
+              完成时间：{{homeworkTask.startDate}}-{{homeworkTask.endDate}}
+            </div>
           </div>
         </div>
-        <div class="homework-item">
-          <div class="homework-content">
-            <div class="homework-name">玩成</div>
-            <div class="homework-desc">fsadfasdfsadfasdfasdfasdfasdfasdfasfvfgsdfasdfsdgsafdsafdsafsdafsadfdsafsdfasdf</div>
-          </div>
-          <div class="homework-dete">
-            完成时间：2018年12月12日-2018年12月12日
-          </div>
-        </div>
-        <div class="homework-item">
-          <div class="homework-content">
-            <div class="homework-name">玩成</div>
-            <div class="homework-desc">fsadfasdfsadfasdfasdfasdfasdfasdfasfvfgsdfasdfsdgsafdsafdsafsdafsadfdsafsdfasdf</div>
-          </div>
-          <div class="homework-dete">
-            完成时间：2018年12月12日-2018年12月12日
-          </div>
+        <div class="homework-item" v-else>
+          <div class="no-homework">暂无作业任务</div>
         </div>
       </div>
-
       <div class="classroom-signin" v-show="show === 2">
-        <div class="homework-item">
-          <div class="homework-content">
-            <div class="homework-name">玩成2</div>
-            <div class="homework-desc">fsadfasdfsadfasdfasdfasdfasdfasdfasfvfgsdfasdfsdgsafdsafdsafsdafsadfdsafsdfasdf</div>
-          </div>
-          <div class="homework-dete">
-            完成时间：2018年12月12日-2018年12月12日
-          </div>
-        </div>
-        <div class="homework-item">
-          <div class="homework-content">
-            <div class="homework-name">玩成2</div>
-            <div class="homework-desc">fsadfasdfsadfasdfasdfasdfasdfasdfasfvfgsdfasdfsdgsafdsafdsafsdafsadfdsafsdfasdf</div>
-          </div>
-          <div class="homework-dete">
-            完成时间：2018年12月12日-2018年12月12日
+        <div v-if="signInTaskList.length > 0">
+          <div class="homework-item" v-for="(signInTask, index) in signInTaskList" :key="index" @click="toPage('../signindetail/main?id=' + signInTask.id)">
+            <div class="homework-content">
+              <div class="homework-name">{{signInTask.name}}</div>
+              <div class="homework-desc">{{signInTask.outline}}</div>
+            </div>
+            <div class="homework-dete">
+              完成时间：{{signInTask.startDate}}-{{signInTask.endDate}}
+            </div>
           </div>
         </div>
-        <div class="homework-item">
-          <div class="homework-content">
-            <div class="homework-name">玩成2</div>
-            <div class="homework-desc">fsadfasdfsadfasdfasdfasdfasdfasdfasfvfgsdfasdfsdgsafdsafdsafsdafsadfdsafsdfasdf</div>
-          </div>
-          <div class="homework-dete">
-            完成时间：2018年12月12日-2018年12月12日
-          </div>
-        </div>
-        <div class="homework-item">
-          <div class="homework-content">
-            <div class="homework-name">玩成2</div>
-            <div class="homework-desc">fsadfasdfsadfasdfasdfasdfasdfasdfasfvfgsdfasdfsdgsafdsafdsafsdafsadfdsafsdfasdf</div>
-          </div>
-          <div class="homework-dete">
-            完成时间：2018年12月12日-2018年12月12日
-          </div>
+        <div class="homework-item" v-else>
+          <div class="no-homework">暂无作业任务</div>
         </div>
       </div>
     </div>
   </div>
+  <div v-else>
+    <div class="no-detail">暂无数据</div>
+    <button class="back-btn bg-orange" @click="toBack">点击返回</button>
+  </div>
 </template>
 
 <script>
-  export default {
-    onLoad (options) {
-      console.log(options)
+import { getClassroomInfo, getHomeworkTask, getSignInTask } from '@/api/classroom'
+export default {
+  onLoad (options) {
+    if (options.id) {
+      this.classroomId = options.id
+      getClassroomInfo(options.id).then((data) => {
+        this.detail = data
+        this.isHave = true
+        this.getHomeworkTaskDate()
+        this.getSignInTaskDate()
+      })
+    } else {
+      this.isHave = false
+    }
+  },
+  components: {
+  },
+  data () {
+    return {
+      classroomId: undefined,
+      isHave: false,
+      show: 1,
+      detail: {},
+      homeworkTaskList: [],
+      signInTaskList: []
+    }
+  },
+  computed: {
+
+  },
+  methods: {
+    toBack () {
+      mpvue.navigateBack({
+        delta: 1
+      })
     },
-    beforeMount () {
-      console.log(this.$mp.query)
+    toPage (url) {
+      mpvue.navigateTo({ url })
     },
-    components: {
+    switBar (index) {
+      this.show = index
     },
-    data () {
-      return {
-        show: 1
+    getHomeworkTaskDate () {
+      if (this.classroomId) {
+        getHomeworkTask(this.classroomId).then((data) => {
+          console.log(data)
+          this.homeworkTaskList = data
+        })
+      } else {
+        this.homeworkTaskList = []
       }
     },
-    computed: {
-
-    },
-    methods: {
-      toPage () {
-        const url = '../login/main'
-        mpvue.navigateTo({ url })
-      },
-      switBar (index) {
-        this.show = index
+    getSignInTaskDate () {
+      if (this.classroomId) {
+        getSignInTask(this.classroomId).then((data) => {
+          this.signInTaskList = data
+        })
+      } else {
+        this.signInTaskList = []
       }
     }
   }
+}
 </script>
 
 <style>
 
   page {
     background-color: #eeeeee;
+  }
+
+  .no-detail {
+    margin-top: 45%;
+    text-align: center;
+  }
+
+  .no-homework, no-sign {
+    margin-top: 90rpx;
+    text-align: center;
+  }
+
+  .back-btn {
+    color: #ffffff;
+    width: 35%;
+    height: 75rpx;
+    font-size: 35rpx;
+    line-height: 75rpx;
   }
 
   .classroom-detail-container {
@@ -175,8 +188,8 @@
   }
 
   .avatar img {
-    width: 80rpx;
-    height: 80rpx;
+    width: 75rpx;
+    height: 75rpx;
     border-radius: 50%;
   }
 
@@ -184,12 +197,13 @@
     float: left;
     font-size: 35rpx;
     display: inline-block;
-    line-height: 80rpx;
+    line-height: 75rpx;
+    margin-left: 5rpx;
   }
 
   .create-date {
     font-size: 25rpx;
-    line-height: 80rpx;
+    line-height: 75rpx;
     float: right;
     color: #999999;
   }
@@ -234,11 +248,10 @@
   .homework-item {
     background-color: #ffffff;
     margin-bottom: 15rpx;
-  }
-
-  .homework-item {
+    position: relative;
     height: 210rpx;
     padding: 10rpx 20rpx;
+    margin-top: 1rpx;
   }
 
   .homework-name {
@@ -264,6 +277,9 @@
     border-top: 1rpx solid #eeeeee;
     color: #999999;
     font-size: 28rpx;
+    position: absolute;
+    bottom: 0rpx;
+    left: 20rpx;
   }
 
 </style>

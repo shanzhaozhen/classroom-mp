@@ -5,11 +5,19 @@
     "pages/search/main",
     "pages/classroom/main",
     "pages/classroomdetail/main",
+    "pages/homeworkdetail/main",
+    "pages/addhomework/main",
+    "pages/signindetail/main",
     "pages/my/main",
     "pages/myinfo/main",
     "pages/login/main",
     "pages/register/main"
   ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于本小程序的签到"
+    }
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",

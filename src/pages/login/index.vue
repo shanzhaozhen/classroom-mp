@@ -10,7 +10,7 @@
       <div class="input-box">
         <input type="password" placeholder="请输入密码" v-model="loginForm.password"/>
       </div>
-      <button class="login-btn mt-50 mb-35 bg-aqua" open-type="getUserInfo" @click="login">登陆</button>
+      <button class="login-btn mt-50 mb-35 bg-aqua" @click="login">登陆</button>
       <button class="login-btn mb-35 bg-orange" @click="toRegisterPage">注册</button>
       <button open-type="getUserInfo" class="login-btn mb-35 bg-green" @getuserinfo="getWechatUserInfo">关联微信登陆</button>
     </div>
@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import { getOpenidByCode } from '@/api/login'
 export default {
   components: {
   },
@@ -35,32 +34,9 @@ export default {
       const url = '../register/main'
       mpvue.navigateTo({ url })
     },
-    login (data) {
-      let tempUserInfo
-      console.log(data.mp)
-      if (data.mp.detail.rawData) {
-        tempUserInfo = data.mp.detail
-      }
-
-      console.log(tempUserInfo)
-
-      this.$store.dispatch('Login', this.loginForm).then(() => {
-        mpvue.showToast({
-          title: '登陆成功',
-          duration: 3000,
-          mask: true
-        })
-        setTimeout(() => {
-          mpvue.navigateBack({
-            delta: 1
-          })
-        }, 3000)
-        this.$store.dispatch('GetUserInfo').then((data) => {
-          if (!data.fullName && !data.nickname) {
-            console.log('进来了')
-            document.getElementById('getUserInfo-btn').click()
-          }
-        })
+    login () {
+      this.$store.dispatch('Login', this.loginForm).then((data) => {
+        this.loginSuccess(data)
       }).catch((error) => {
         mpvue.showToast({
           title: error.msg,
@@ -72,16 +48,28 @@ export default {
     },
     getWechatUserInfo (data) {
       if (data.mp.detail.rawData) {
-        console.log(data.mp.detail.userInfo)
         this.$store.dispatch('SetWechatUserInfo', data.mp.detail.userInfo)
         mpvue.login({
           success: (res) => {
             if (res.code) {
-              getOpenidByCode({ code: res.code }).then((data) => {
-                this.$store.dispatch('SetOpenId', data.openId)
+              this.$store.dispatch('WechatLogin', res.code).then(() => {
+                this.loginSuccess()
               })
+                .catch((error) => {
+                  mpvue.showToast({
+                    title: error.msg,
+                    icon: 'none',
+                    duration: 1500,
+                    mask: true
+                  })
+                })
             } else {
-              console.log('登录失败！' + res.errMsg)
+              mpvue.showToast({
+                title: '登录失败',
+                icon: 'none',
+                duration: 1500,
+                mask: true
+              })
             }
           }
         })
@@ -93,6 +81,28 @@ export default {
           mask: true
         })
       }
+    },
+    loginSuccess () {
+      mpvue.showToast({
+        title: '登陆成功',
+        duration: 1500,
+        mask: true
+      })
+      setTimeout(() => {
+        mpvue.navigateBack({
+          delta: 1
+        })
+      }, 1500)
+
+      this.$store.dispatch('GetUserInfo').then((data) => {
+        if (data.nickName !== this.wechatUserInfo.nickName || data.avatarUrl !== this.wechatUserInfo.avatarUrl) {
+          this.$store.dispatch('UpdateUserInfo', this.wechatUserInfo).then((data) => {
+            if (data.success === true) {
+              this.$store.dispatch('GetUserInfo')
+            }
+          })
+        }
+      })
     }
   }
 }

@@ -2,59 +2,80 @@
   <div class="search-container">
     <div class="search-bar">
       <img src="/static/icon/search.png">
-      <input type="text" placeholder="请输入你想加入的班级" />
+      <input type="text" placeholder="请输入你想加入的班级" v-model="keyword"/>
+      <div class="search-btn" @click="getClassroomDate">搜索</div>
     </div>
     <div class="result-container">
-      <div>
-        <div class="item">
-          <div class="user-info">
-            <img src="/static/images/user.png">
-            <div class="username">username</div>
-            <div class="join">马上加入</div>
+      <div class="list" v-if="list.length > 0">
+        <div v-for="(item, index) in list" :key="index">
+          <div class="item">
+            <div class="user-info">
+              <img :src="item.headmasterInfo.avatarUrl">
+              <div class="username">{{item.headmasterInfo.nickName}}</div>
+              <div class="join" @click="joinIn(item.id)">马上加入</div>
+            </div>
+            <div class="item-content">
+              <div class="class-name">{{item.name}}</div>
+              <div class="class-desc">{{item.outline}}</div>
+            </div>
+            <div class="item-date">
+              <span>创建于{{item.createdDate}}</span>
+            </div>
           </div>
-          <div class="item-content">
-            <div class="class-name">2年E班</div>
-            <div class="class-desc">这是一个什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么的班级</div>
-          </div>
-          <div class="item-date">
-            <div>创建于2018年12月12日</div>
-          </div>
+          <div class="splice-bar"></div>
         </div>
-        <div class="splice-bar"></div>
       </div>
-      <div>
-        <div class="item">
-          <div class="user-info">
-            <img src="/static/images/user.png">
-            <div class="username">username</div>
-            <div class="join">马上加入</div>
-          </div>
-          <div class="item-content">
-            <div class="class-name">2年E班</div>
-            <div class="class-desc">这是一个什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么什么的班级</div>
-          </div>
-          <div class="item-date">
-            <div>创建于2018年12月12日</div>
-          </div>
-        </div>
-        <div class="splice-bar"></div>
+      <div class="no-result" v-else>
+        没有找到你需要的结果
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { searchClassroom, joinClassroom } from '@/api/classroom'
+
 export default {
   components: {
   },
   data () {
     return {
+      keyword: '',
+      list: []
     }
+  },
+  onShow () {
+    this.getClassroomDate()
   },
   methods: {
     toLoginPage () {
       const url = '../login/main'
       mpvue.navigateTo({ url })
+    },
+    getClassroomDate () {
+      searchClassroom(this.keyword).then((data) => {
+        console.log(data)
+        this.list = data
+      })
+    },
+    joinIn (id) {
+      joinClassroom(id).then((data) => {
+        console.log(data)
+        if (data.success === true) {
+          mpvue.showToast({
+            title: '加入成功',
+            duration: 3000,
+            mask: true
+          })
+        } else {
+          mpvue.showToast({
+            title: data.msg,
+            icon: 'none',
+            duration: 3000,
+            mask: true
+          })
+        }
+      })
     }
   }
 }
@@ -64,6 +85,11 @@ export default {
 
   .search-container {
     padding-top: 15rpx;
+  }
+
+  .no-result {
+    text-align: center;
+    margin-top: 40%;
   }
 
   .search-bar {
@@ -99,6 +125,16 @@ export default {
     font-size: 32rpx;
   }
 
+  .search-btn {
+    position: absolute;
+    top: 8rpx;
+    right: 6%;
+    color: #000000;
+    font-size: 30rpx;
+    line-height: 40rpx;
+    z-index: 2;
+  }
+
   .result-container {
     padding: 5rpx 0 0 0;
   }
@@ -109,6 +145,7 @@ export default {
     background-color: #fff;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .splice-bar {
@@ -143,12 +180,11 @@ export default {
     border: 1rpx solid #ff851b;
     color: #ff851b;
     font-size: 25rpx;
-    padding: 2rpx 10rpx;
+    padding: 3rpx 10rpx;
   }
 
   .item-content {
     padding: 0 18rpx 0 18rpx;
-    border-bottom: 1px solid #9b9b9b;
   }
 
   .class-name {
@@ -167,10 +203,17 @@ export default {
   }
 
   .item-date {
-    text-align: right;
+    position: absolute;
+    bottom: 10rpx;
     font-size: 25rpx;
+    padding-top: 5rpx;
+    border-top: 2rpx solid #9b9b9b;
+    width: 100%;
+    text-align: right;
+  }
+
+  .item-date span {
     margin-right: 12rpx;
-    margin-top: 8rpx;
   }
 
 </style>

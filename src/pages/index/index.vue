@@ -1,7 +1,7 @@
 <template>
   <div class="index-container">
     <div class="card-list">
-      <div class="card-item" @click="toPage('../addclassroom/main')">
+      <div class="card-item" @click="toPageIsLogin('../addclassroom/main')">
         <div class="item-img bg-maroon">
           <img src="/static/icon/check-circle.png">
         </div>
@@ -10,7 +10,7 @@
           <p class="title-small">创建班级，管理同学们的出勤和作业</p>
         </div>
       </div>
-      <div class="card-item" @click="toPage('../search/main')">
+      <div class="card-item" @click="toPageIsLogin('../search/main')">
         <div class="item-img bg-aqua">
           <img src="/static/icon/check-circle.png">
         </div>
@@ -22,7 +22,8 @@
     </div>
     <div class="more-pc">更多功能（请使用PC端）</div>
     <div class="card-list">
-      <div class="card-item" @click="alertTips">
+      <!--<div class="card-item" @click="alertTips">-->
+      <div class="card-item" @click="toPage('../addhomework/main')">
         <div class="item-img bg-orange">
           <img src="/static/icon/check-circle.png">
         </div>
@@ -45,12 +46,56 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data () {
   },
+  computed: {
+    ...mapGetters(['isLogin'])
+  },
   components: {
   },
+  onLoad () {
+    mpvue.getSetting({
+      success (res) {
+        if (!res.authSetting['scope.userLocation']) {
+          mpvue.authorize({
+            scope: 'scope.userLocation',
+            success () {
+              // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
+              console.log('取得定位权限')
+            }
+          })
+        }
+        if (!res.authSetting['scope.camera']) {
+          mpvue.authorize({
+            scope: 'scope.camera',
+            success () {
+              // 用户已经同意小程序使用录音功能，后续调用 wx.startRecord 接口不会弹窗询问
+              console.log('取得摄像头权限')
+            }
+          })
+        }
+      }
+    })
+  },
   methods: {
+    toPageIsLogin (url) {
+      if (this.isLogin === true) {
+        this.toPage(url)
+      } else {
+        mpvue.showToast({
+          title: '请先登陆',
+          icon: 'none',
+          duration: 1500,
+          mask: true
+        })
+        setTimeout(() => {
+          this.toPage('../login/main')
+        }, 1500)
+      }
+    },
     toPage (url) {
       mpvue.navigateTo({ url })
     },

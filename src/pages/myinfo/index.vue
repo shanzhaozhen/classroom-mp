@@ -3,27 +3,50 @@
     <div class="form-box">
       <div class="input-box">
         <div class="label-name">用户名</div>
-        <div class="label-value">{{username}}</div>
+        <div class="label-value">{{userInfo.username}}</div>
+      </div>
+      <div class="input-box">
+        <div class="label-name">真实姓名</div>
+        <div class="label-value">{{userInfo.fullName}}</div>
+      </div>
+      <div class="input-box">
+        <div class="label-name">昵称</div>
+        <div class="label-value">{{userInfo.nickName}}</div>
       </div>
       <div class="input-box">
         <div class="label-name">微信账号</div>
         <div class="label-value">点击解绑</div>
       </div>
     </div>
-    <button class="logout-btn mt-50 mb-35 bg-aqua">退出登录</button>
+    <button class="logout-btn mt-50 mb-35 bg-aqua" @click="logout">退出登录</button>
   </div>
 </template>
 
 <script>
-  export default {
-    components: {
-    },
-    data () {
-      return {
-        username: 'username'
-      }
+import { mapGetters } from 'vuex'
+
+export default {
+  components: {
+  },
+  data () {
+    return {
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'isLogin',
+      'userInfo'])
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch('LogOut').then(() => {
+        mpvue.navigateBack({
+          delta: 1
+        })
+      })
     }
   }
+}
 </script>
 
 <style>

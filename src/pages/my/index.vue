@@ -1,28 +1,36 @@
 <template>
   <div class="my-container">
-    <div class="user-info">
+    <div class="user-info" v-if="isLogin">
+      <div class="avatar">
+        <img :src="wechatUserInfo.avatarUrl">
+      </div>
+      <div class="username">{{wechatUserInfo.nickName}}</div>
+      <button class="modify-btn" @click="toPage('../myinfo/main')">修改个人资料</button>
+    </div>
+    <div class="user-info" v-else>
       <div class="avatar">
         <img src="/static/images/user.png">
       </div>
-      <div class="username" v-if="isLogin">username</div>
-      <div class="username" v-else>(未登录)</div>
-      <button class="modify-btn" @click="toPage('../myinfo/main')" v-if="isLogin">修改个人资料</button>
-      <button class="login-btn" open-type="getUserInfo" @getuserinfo="getWechatUserInfo" v-else>登陆</button>
+      <div class="username">(未登录)</div>
+      <button class="login-btn" open-type="getUserInfo" @getuserinfo="getWechatUserInfo">登陆</button>
     </div>
   </div>
 </template>
 
 <script>
-import { wechatLogin } from '@/api/login'
-// import { wechatLogin, getOpenidByCode } from '@/api/login'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
   },
   data () {
     return {
-      isLogin: false
     }
+  },
+  computed: {
+    ...mapGetters([
+      'isLogin',
+      'wechatUserInfo'])
   },
   methods: {
     toPage (url) {
@@ -30,39 +38,9 @@ export default {
     },
     getWechatUserInfo (data) {
       if (data.mp.detail.rawData) {
-        console.log(data.mp.detail.userInfo)
         this.$store.dispatch('SetWechatUserInfo', data.mp.detail.userInfo)
-        mpvue.login({
-          success: (res) => {
-            if (res.code) {
-              wechatLogin({ code: res.code }).then((data) => {
-                if (data.success === true) {
-                  this.$store.dispatch('WechatLogin', data.token).then(() => {
-                    this.$store.dispatch('GetUserInfo').then((data) => {
-                      if (!data.fullName || !data.fullName) {
-                        this.$store.dispatch('UpdateUserInfo', this.$store.getters.wechatUserInfo).then((data) => {
-                        })
-                      }
-                    })
-                  })
-                } else {
-                  this.toPage('../login/main')
-                }
-                console.log(data)
-                // this.$store.dispatch('SetOpenId', data.openId)
-              })
-            } else {
-              console.log('登录失败！' + res.errMsg)
-            }
-          }
-        })
-      } else {
-        mpvue.showToast({
-          title: '获取用户数据失败',
-          icon: 'none',
-          duration: 3000,
-          mask: true
-        })
+        this.$store.dispatch('LogOut')
+        this.toPage('../login/main')
       }
     }
   }
