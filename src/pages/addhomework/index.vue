@@ -7,7 +7,7 @@
       </div>
       <div class="input-box">
         <span>附件：<button class="file-btn bg-orange" @click="upload">选择附件</button></span>
-        <div class="file-list" v-if="fileName">{{fileName}}</div>
+        <div class="file-list" v-if="homeworkData.fileName">{{homeworkData.fileName}}</div>
       </div>
       <div></div>
     </div>
@@ -27,9 +27,9 @@ export default {
       homeworkData: {
         homeworkTaskId: undefined,
         content: '',
-        fileUrl: ''
-      },
-      fileName: ''
+        fileUrl: '',
+        fileName: ''
+      }
     }
   },
   onLoad (options) {
@@ -77,7 +77,7 @@ export default {
           upload(tempFilePaths[0].path).then((data) => {
             console.log(data)
             if (data.success === true) {
-              this.fileName = tempFilePaths[0].name
+              this.homeworkData.fileName = tempFilePaths[0].name
               this.homeworkData.fileUrl = data.relativePath
               mpvue.showToast({
                 title: '上传成功',

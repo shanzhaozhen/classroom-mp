@@ -27,6 +27,14 @@ export function getOpenidByCode (data) {
   return http('wechat/openid', 'get', data)
 }
 
+export function binding (code) {
+  return http('admin/user/binding', 'put', code)
+}
+
+export function unbinding () {
+  return http('admin/user/unbinding', 'put')
+}
+
 // export function logout() {
 //   return request({
 //     url: '/user/logout',

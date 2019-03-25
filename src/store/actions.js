@@ -9,7 +9,7 @@ import {
   SET_WECHAT_USER_INFO
 } from './mutations-type'
 
-import { login, getUserInfo, updateUserInfo, wechatLogin } from '@/api/login'
+import { login, getUserInfo, updateUserInfo, wechatLogin, binding, unbinding } from '@/api/login'
 
 const TOKEN_KEY = 'access-token'
 
@@ -57,7 +57,8 @@ export default {
             username: data.username,
             fullName: data.fullName,
             nickName: data.nickName,
-            avatarUrl: data.avatarUrl
+            avatarUrl: data.avatarUrl,
+            openId: data.openId
           }
           commit(SET_USER_INFO, userinfo)
           resolve(data)
@@ -98,6 +99,27 @@ export default {
       commit(SET_TOKEN, '')
       commit(SET_USER_INFO, null)
       resolve()
+    })
+  },
+  // 绑定
+  Binding ({ commit }, code) {
+    return new Promise((resolve, reject) => {
+      binding(code).then(data => {
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  // 解绑
+  Unbinding ({ commit }) {
+    return new Promise((resolve, reject) => {
+      unbinding().then(data => {
+        commit(SET_OPENID, '')
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
     })
   }
 }

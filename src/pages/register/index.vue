@@ -5,10 +5,16 @@
         <img src="/static/images/user.png">
       </div>
       <div class="input-box">
-        <input type="text" placeholder="请输入账号" v-model="username"/>
+        <input type="text" placeholder="请输入账号" v-model="registerData.username"/>
       </div>
       <div class="input-box">
-        <input type="password" placeholder="请输入密码" v-model="password"/>
+        <input type="text" placeholder="真实姓名" v-model="registerData.fullName"/>
+      </div>
+      <div class="input-box">
+        <input type="number" placeholder="学号" v-model="registerData.number"/>
+      </div>
+      <div class="input-box">
+        <input type="password" placeholder="请输入密码" v-model="registerData.password"/>
       </div>
       <button class="login-btn mb-35 bg-orange" @click="register">开始注册</button>
     </div>
@@ -22,8 +28,11 @@ export default {
   },
   data () {
     return {
-      username: '',
-      password: ''
+      registerData: {
+        username: '',
+        password: '',
+        fullName: ''
+      }
     }
   },
   methods: {
@@ -32,13 +41,17 @@ export default {
       mpvue.navigateTo({ url })
     },
     register () {
-      http('register', 'post', {
-        username: this.username,
-        password: this.password
-      }).then((response) => {
-        // console.log(response)
-        let res = response.data
-        console.log(res)
+      const { username, password, fullName, number } = this.registerData
+      if (!username || !password || !fullName || !number) {
+        mpvue.showToast({
+          title: '字段不能为空',
+          icon: 'none',
+          duration: 3000,
+          mask: true
+        })
+        return
+      }
+      http('register', 'post', this.registerData).then((res) => {
         if (res.success === true) {
           mpvue.showToast({
             title: '注册成功',

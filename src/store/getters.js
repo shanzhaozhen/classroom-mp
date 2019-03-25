@@ -5,6 +5,7 @@ export default {
   isLogin: state => state.isLogin,
   token: state => state.userInfo.token,
   nickName: state => state.userInfo.nickName,
+  fullName: state => state.userInfo.fullName,
   avatarUrl: state => state.userInfo.avatarUrl,
   roles: state => state.userInfo.roles,
   userInfo: state => state.userInfo,

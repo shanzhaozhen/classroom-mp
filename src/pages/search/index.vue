@@ -54,7 +54,6 @@ export default {
     },
     getClassroomDate () {
       searchClassroom(this.keyword).then((data) => {
-        console.log(data)
         this.list = data
       })
     },

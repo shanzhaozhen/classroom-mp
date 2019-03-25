@@ -45,6 +45,7 @@ export function http (url, type = 'GET', data = {}) {
           resolve(res.data)
         },
         fail (error) {
+          console.log(error)
           errorHandle(error, reject)
         }
       })
@@ -84,13 +85,22 @@ function errorHandle (error, reject) {
     }
     store.dispatch('LogOut')
   } else {
-    mpvue.showToast({
-      title: error.message,
-      icon: 'none',
-      duration: 3000,
-      mask: true
-    })
-    return Promise.reject(error)
+    if (error.message) {
+      mpvue.showToast({
+        title: error.message,
+        icon: 'none',
+        duration: 3000,
+        mask: true
+      })
+    } else {
+      mpvue.showToast({
+        title: error.errMsg,
+        icon: 'none',
+        duration: 3000,
+        mask: true
+      })
+    }
+    return reject(error)
   }
   reject(error.data)
 }
