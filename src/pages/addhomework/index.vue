@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { sumbitHomework } from '@/api/classroom'
+import { sumbitHomework } from '@/api/homework'
 import { upload } from '@/utils/request'
 
 export default {

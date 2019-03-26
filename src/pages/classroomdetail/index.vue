@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="homework-item" v-else>
-          <div class="no-homework">暂无作业任务</div>
+          <div class="no-homework">暂无考勤任务</div>
         </div>
       </div>
     </div>
@@ -58,7 +58,9 @@
 </template>
 
 <script>
-import { getClassroomInfo, getHomeworkTask, getSignInTask } from '@/api/classroom'
+import { getClassroomInfo } from '@/api/classroom'
+import { getHomeworkTask } from '@/api/homework'
+import { getSignInTask } from '@/api/signin'
 export default {
   onLoad (options) {
     if (options.id) {

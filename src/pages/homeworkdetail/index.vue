@@ -11,7 +11,8 @@
       </div>
     </div>
     <div class="sumbit-homework">
-      <button class="back-btn bg-purple" @click="toPage('../addhomework/main?id=' + detail.id)">交作业</button>
+      <button class="back-btn bg-purple" disabled v-if="isSumbit">已交作业</button>
+      <button class="back-btn bg-purple" @click="toPage('../addhomework/main?id=' + detail.id)" v-else>交作业</button>
     </div>
   </div>
   <div v-else>
@@ -21,33 +22,40 @@
 </template>
 
 <script>
-import { getHomeworkTaskInfo } from '@/api/classroom'
+import { getHomeworkTaskInfo, getHomeworkDetail } from '@/api/homework'
 export default {
   onLoad (options) {
     if (options.id) {
-      this.classroomId = options.id
-      getHomeworkTaskInfo(options.id).then((data) => {
-        this.detail = data
-        this.isHave = true
-      })
+      this.homeworkTaskId = options.id
+      this.getHomeworkTaskInfo()
+      this.getHomeworkDetail()
     } else {
       this.isHave = false
     }
+  },
+  onShow () {
+    this.getHomeworkDetail()
   },
   components: {
   },
   data () {
     return {
-      classroomId: undefined,
+      homeworkTaskId: undefined,
       isHave: false,
       show: 1,
       detail: {},
+      homeworkDetail: null,
       homeworkTaskList: [],
       signInTaskList: []
     }
   },
   computed: {
-
+    isSumbit () {
+      if (this.homeworkDetail !== null) {
+        return true
+      }
+      return false
+    }
   },
   methods: {
     toBack () {
@@ -57,6 +65,22 @@ export default {
     },
     toPage (url) {
       mpvue.navigateTo({ url })
+    },
+    getHomeworkTaskInfo () {
+      getHomeworkTaskInfo(this.homeworkTaskId).then((data) => {
+        this.detail = data
+        this.isHave = true
+      })
+    },
+    getHomeworkDetail () {
+      getHomeworkDetail(this.homeworkTaskId).then((res) => {
+        console.log(res)
+        if (res.success === true) {
+          this.homeworkDetail = res.data
+        } else {
+          this.homeworkDetail = null
+        }
+      })
     }
   }
 }

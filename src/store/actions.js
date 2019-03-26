@@ -49,7 +49,7 @@ export default {
     })
   },
   // 获取用户信息
-  GetUserInfo ({ commit }) {
+  GetUserInfo ({ dispatch, commit, state }) {
     return new Promise((resolve, reject) => {
       getUserInfo().then(data => {
         if (data.success === true) {
@@ -61,6 +61,15 @@ export default {
             openId: data.openId
           }
           commit(SET_USER_INFO, userinfo)
+          if (data.nickName !== state.wechatUserInfo.nickName || data.avatarUrl !== state.wechatUserInfo.avatarUrl) {
+            console.log('进来修改')
+            dispatch('UpdateUserInfo', state.wechatUserInfo).then((data) => {
+              if (data.success === true) {
+                dispatch('GetUserInfo')
+              }
+            })
+          }
+
           resolve(data)
         } else {
           reject(data)

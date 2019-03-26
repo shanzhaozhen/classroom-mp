@@ -14,12 +14,13 @@
       </div>
     </div>
     <div class="sumbit-signin">
-      <button class="back-btn bg-purple" @click="signIn">马上签到</button>
+      <button class="back-btn bg-purple" disabled v-if="isSignIn">已签到</button>
+      <button class="back-btn bg-purple" @click="signIn" v-else>马上签到</button>
     </div>
     <div v-show="isCamera" class="camera-box">
       <div v-show="!isViewState">
         <camera
-          device-position="back"
+          device-position="front"
           flash="off"
           binderror="error"
         ></camera>
@@ -39,18 +40,20 @@
 </template>
 
 <script>
-import { getSignInTaskInfo, signIn } from '@/api/classroom'
+import { getSignInTaskInfo, getSignInDetail, signIn } from '@/api/signin'
 export default {
   onLoad (options) {
     if (options.id) {
       this.signInTaskId = options.id
-      getSignInTaskInfo(options.id).then((data) => {
-        this.detail = data
-        this.isHave = true
-      })
+      this.getSignInTaskInfo()
+      this.getSignInDetail()
     } else {
       this.isHave = false
     }
+  },
+  onShow () {
+    this.isCamera = false
+    this.getSignInDetail()
   },
   components: {
   },
@@ -62,13 +65,19 @@ export default {
       isViewState: false,
       show: 1,
       detail: {},
+      signInDetail: null,
       homeworkTaskList: [],
       signInTaskList: [],
       src: ''
     }
   },
   computed: {
-
+    isSignIn () {
+      if (this.signInDetail !== null) {
+        return true
+      }
+      return false
+    }
   },
   methods: {
     toBack () {
@@ -78,6 +87,22 @@ export default {
     },
     toPage (url) {
       mpvue.navigateTo({ url })
+    },
+    getSignInTaskInfo () {
+      getSignInTaskInfo(this.signInTaskId).then((data) => {
+        this.detail = data
+        this.isHave = true
+      })
+    },
+    getSignInDetail () {
+      getSignInDetail(this.signInTaskId).then((res) => {
+        console.log(res)
+        if (res.success === true) {
+          this.signInDetail = res.data
+        } else {
+          this.signInDetail = null
+        }
+      })
     },
     signIn () {
       let signInDate = {
@@ -119,7 +144,8 @@ export default {
           }
         }
       })
-      // this.isCamera = true
+      this.isCamera = true
+      console.log(this.isCamera)
     },
     takePhoto () {
       const ctx = mpvue.createCameraContext()

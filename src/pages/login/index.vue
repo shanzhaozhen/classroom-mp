@@ -83,6 +83,7 @@ export default {
       }
     },
     loginSuccess () {
+      this.$store.dispatch('GetUserInfo')
       mpvue.showToast({
         title: '登陆成功',
         duration: 1500,
@@ -93,16 +94,6 @@ export default {
           delta: 1
         })
       }, 1500)
-
-      this.$store.dispatch('GetUserInfo').then((data) => {
-        if (data.nickName !== this.wechatUserInfo.nickName || data.avatarUrl !== this.wechatUserInfo.avatarUrl) {
-          this.$store.dispatch('UpdateUserInfo', this.wechatUserInfo).then((data) => {
-            if (data.success === true) {
-              this.$store.dispatch('GetUserInfo')
-            }
-          })
-        }
-      })
     }
   }
 }

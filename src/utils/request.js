@@ -1,6 +1,6 @@
 import store from '@/store'
 
-const api = 'http://127.0.0.1:8090/classroom'
+const api = 'http://god.ngrok.xiaomiqiu.cn/classroom'
 
 const TOKEN_HEADER = 'Class-Token'
 
