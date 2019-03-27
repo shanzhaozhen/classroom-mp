@@ -9,7 +9,7 @@ import {
   SET_WECHAT_USER_INFO
 } from './mutations-type'
 
-import { login, getUserInfo, updateUserInfo, wechatLogin, binding, unbinding } from '@/api/login'
+import { login, getUserInfo, updateUserInfo, wechatLogin, binding, unbinding } from '@/api/user'
 
 const TOKEN_KEY = 'access-token'
 
@@ -54,8 +54,10 @@ export default {
       getUserInfo().then(data => {
         if (data.success === true) {
           let userinfo = {
+            faceToken: data.faceToken,
             username: data.username,
             fullName: data.fullName,
+            number: data.number,
             nickName: data.nickName,
             avatarUrl: data.avatarUrl,
             openId: data.openId

@@ -5,9 +5,10 @@
         <span>作业内容：</span>
         <textarea placeholder="请填写班级概述" rows="6" v-model="homeworkData.content"></textarea>
       </div>
-      <div class="input-box">
-        <span>附件：<button class="file-btn bg-orange" @click="upload">选择附件</button></span>
-        <div class="file-list" v-if="homeworkData.fileName">{{homeworkData.fileName}}</div>
+      <div class="input-box file-box">
+        <span class="file-span">附件：</span>
+        <button class="file-btn bg-orange" @click="upload">选择附件</button>
+        <div class="file-list" v-if="fileName">{{fileName}}</div>
       </div>
       <div></div>
     </div>
@@ -16,8 +17,7 @@
 </template>
 
 <script>
-import { sumbitHomework } from '@/api/homework'
-import { upload } from '@/utils/request'
+import { sumbitHomework, uploadFile } from '@/api/homework'
 
 export default {
   components: {
@@ -27,13 +27,18 @@ export default {
       homeworkData: {
         homeworkTaskId: undefined,
         content: '',
-        fileUrl: '',
-        fileName: ''
-      }
+        fileInfoId: null
+      },
+      fileName: null
     }
   },
   onLoad (options) {
     this.homeworkData.homeworkTaskId = options.id
+  },
+  onShow () {
+    this.homeworkData.content = ''
+    this.homeworkData.fileInfoId = null
+    this.fileName = null
   },
   methods: {
     createHomework () {
@@ -72,13 +77,14 @@ export default {
         count: 1,
         // type: 'file',
         success: (res) => {
+          console.log(res)
           // tempFilePath可以作为img标签的src属性显示图片
           const tempFilePaths = res.tempFiles
-          upload(tempFilePaths[0].path).then((data) => {
+          uploadFile(tempFilePaths[0].path, tempFilePaths[0].name).then((data) => {
             console.log(data)
             if (data.success === true) {
-              this.homeworkData.fileName = tempFilePaths[0].name
-              this.homeworkData.fileUrl = data.relativePath
+              this.fileName = tempFilePaths[0].name
+              this.homeworkData.fileInfoId = data.fileInfoId
               mpvue.showToast({
                 title: '上传成功',
                 duration: 1500,
@@ -146,8 +152,13 @@ export default {
     line-height: 75rpx;
   }
 
+  .file-box {
+    position: relative;
+  }
+
   .file-btn {
-    float: right;
+    position: absolute;
+    right: 20rpx;
     color: #ffffff;
     width: 180rpx;
     height: 45rpx;

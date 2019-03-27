@@ -1,4 +1,4 @@
-import { http } from '@/utils/request'
+import { http, upload } from '@/utils/request'
 
 /**
  * 登陆请求
@@ -33,6 +33,14 @@ export function binding (code) {
 
 export function unbinding () {
   return http('admin/user/unbinding', 'put')
+}
+
+export function updateFaceToken () {
+  return http('admin/user/facetoken', 'put')
+}
+
+export function takeFaceToken (imgPath) {
+  return upload('admin/user/face', imgPath)
 }
 
 // export function logout() {

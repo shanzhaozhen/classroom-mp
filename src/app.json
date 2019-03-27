@@ -3,6 +3,7 @@
     "pages/index/main",
     "pages/addclassroom/main",
     "pages/search/main",
+    "pages/preadd/main",
     "pages/classroom/main",
     "pages/classroomdetail/main",
     "pages/homeworkdetail/main",
