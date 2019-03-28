@@ -35,8 +35,8 @@ export function unbinding () {
   return http('admin/user/unbinding', 'put')
 }
 
-export function updateFaceToken () {
-  return http('admin/user/facetoken', 'put')
+export function updateFaceToken (faceData) {
+  return http('admin/user/face', 'put', faceData)
 }
 
 export function takeFaceToken (imgPath) {

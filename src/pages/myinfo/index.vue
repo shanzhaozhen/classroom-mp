@@ -14,6 +14,10 @@
         <div class="label-value">{{userInfo.nickName}}</div>
       </div>
       <div class="input-box">
+        <div class="label-name">脸谱</div>
+        <div class="label-value" @click="toPage('../preadd/main')">更新脸谱</div>
+      </div>
+      <div class="input-box">
         <div class="label-name">微信账号</div>
         <div class="label-value" v-if="isBinding" @click="unbinding">点击解绑</div>
         <div class="label-value" v-else @click="binding">点击绑定</div>
@@ -53,6 +57,9 @@ export default {
           delta: 1
         })
       })
+    },
+    toPage (url) {
+      mpvue.navigateTo({ url })
     },
     binding () {
       mpvue.login({

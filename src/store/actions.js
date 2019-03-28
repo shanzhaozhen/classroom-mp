@@ -2,6 +2,7 @@
  * 通过mutations间接更新state的多个方法对象
  */
 import {
+  SET_IS_CAMERA,
   SET_IS_LOGIN,
   SET_TOKEN,
   SET_USER_INFO,
@@ -14,6 +15,9 @@ import { login, getUserInfo, updateUserInfo, wechatLogin, binding, unbinding } f
 const TOKEN_KEY = 'access-token'
 
 export default {
+  SetCamera ({ commit }, isCamera) {
+    commit(SET_IS_CAMERA, isCamera)
+  },
   SetToken ({ commit }, token) {
     commit(SET_TOKEN, token)
   },

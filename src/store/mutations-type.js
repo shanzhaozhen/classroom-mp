@@ -1,6 +1,8 @@
 /**
  * 包含多个mutations的type名称常量
  */
+export const SET_IS_CAMERA = 'set_is_camera'
+
 export const SET_IS_LOGIN = 'set_is_login'
 
 export const SET_TOKEN = 'set_token'

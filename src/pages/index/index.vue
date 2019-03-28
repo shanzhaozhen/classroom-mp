@@ -23,7 +23,7 @@
     <div class="more-pc">更多功能（请使用PC端）</div>
     <div class="card-list">
       <!--<div class="card-item" @click="alertTips">-->
-      <div class="card-item" @click="toPage('../preadd/main')">
+      <div class="card-item" @click="alertTips">
         <div class="item-img bg-orange">
           <img src="/static/icon/check-circle.png">
         </div>
@@ -42,19 +42,25 @@
         </div>
       </div>
     </div>
+    <photograph :isCamera="isCamera"></photograph>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import photograph from '@/components/photograph'
 
 export default {
   data () {
+    return {
+      isCamera: false
+    }
   },
   computed: {
     ...mapGetters(['isLogin'])
   },
   components: {
+    photograph
   },
   onLoad () {
     mpvue.getSetting({

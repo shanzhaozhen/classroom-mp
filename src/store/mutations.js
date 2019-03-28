@@ -2,6 +2,7 @@
  * 直接更新state的多个方法对象
  */
 import {
+  SET_IS_CAMERA,
   SET_IS_LOGIN,
   SET_TOKEN,
   SET_USER_INFO,
@@ -10,6 +11,9 @@ import {
 } from './mutations-type'
 
 export default {
+  [SET_IS_CAMERA]: (state, isCamera) => {
+    state.isCamera = isCamera
+  },
   [SET_IS_LOGIN]: (state, isLogin) => {
     state.isLogin = isLogin
   },

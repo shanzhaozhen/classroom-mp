@@ -2,6 +2,7 @@
  * 基于state的getter计算属性对象
  */
 export default {
+  isCamera: state => state.isCamera,
   isLogin: state => state.isLogin,
   token: state => state.userInfo.token,
   faceToken: state => state.userInfo.faceToken,

@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { searchClassroom, joinClassroom } from '@/api/classroom'
 
 export default {
@@ -44,12 +45,17 @@ export default {
       list: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'faceToken',
+      'fullName',
+      'number'])
+  },
   onShow () {
     this.getClassroomDate()
   },
   methods: {
-    toLoginPage () {
-      const url = '../login/main'
+    toPage (url) {
       mpvue.navigateTo({ url })
     },
     getClassroomDate () {
@@ -58,23 +64,35 @@ export default {
       })
     },
     joinIn (id) {
-      joinClassroom(id).then((data) => {
-        console.log(data)
-        if (data.success === true) {
-          mpvue.showToast({
-            title: '加入成功',
-            duration: 3000,
-            mask: true
-          })
-        } else {
-          mpvue.showToast({
-            title: data.msg,
-            icon: 'none',
-            duration: 3000,
-            mask: true
-          })
-        }
-      })
+      if (this.faceToken && this.fullName && this.number) {
+        joinClassroom(id).then((data) => {
+          console.log(data)
+          if (data.success === true) {
+            mpvue.showToast({
+              title: '加入成功',
+              duration: 3000,
+              mask: true
+            })
+          } else {
+            mpvue.showToast({
+              title: data.msg,
+              icon: 'none',
+              duration: 3000,
+              mask: true
+            })
+          }
+        })
+      } else {
+        mpvue.showToast({
+          title: '个人信息不全或者未录入脸谱',
+          icon: 'none',
+          duration: 3000,
+          mask: true
+        })
+        setTimeout(() => {
+          this.toPage('../preadd/main')
+        }, 3000)
+      }
     }
   }
 }
