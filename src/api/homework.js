@@ -13,7 +13,7 @@ export function getHomeworkDetail (homeworkTaskId) {
 }
 
 export function uploadFile (filePath, fileName) {
-  return upload('upload', filePath, fileName)
+  return upload('upload', filePath, { fileName })
 }
 
 export function sumbitHomework (homeworkData) {

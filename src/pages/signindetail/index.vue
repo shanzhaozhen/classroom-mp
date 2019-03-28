@@ -5,9 +5,9 @@
       <div class="classroom-desc">{{detail.outline}}</div>
       <div class="classroom-desc">开始时间：{{detail.startDate}}</div>
       <div class="classroom-desc">结束时间：{{detail.endDate}}</div>
-      <div class="classroom-desc">签到方式：{{detail.signInType}}</div>
+      <div class="classroom-desc">签到方式：{{signInTypeFilter}}</div>
       <div class="classroom-desc">签到地点：{{detail.address}}</div>
-      <div class="classroom-desc">签到范围：{{detail.endDate}}</div>
+      <div class="classroom-desc">签到范围：{{detail.scope + '米'}}</div>
       <div class="splice-line"></div>
       <div class="user-info">
         <div class="create-date">创建于：{{detail.createdDate}}</div>
@@ -17,21 +17,7 @@
       <button class="back-btn bg-purple" disabled v-if="isSignIn">已签到</button>
       <button class="back-btn bg-purple" @click="signIn" v-else>马上签到</button>
     </div>
-    <div v-show="isCamera" class="camera-box">
-      <div v-show="!isViewState">
-        <camera
-          device-position="front"
-          flash="off"
-          binderror="error"
-        ></camera>
-        <button class="back-btn bg-green btn" @tap="takePhoto">拍照</button>
-      </div>
-      <div v-show="isViewState">
-        <image mode="widthFix" :src="src"></image>
-        <button class="back-btn bg-orange btn" @tap="rePhoto">重拍</button>
-        <button class="back-btn bg-green btn" @tap="confirmPhoto">确定</button>
-      </div>
-    </div>
+    <photograph @confirmEvent="confirmPhoto"></photograph>
   </div>
   <div v-else>
     <div class="no-detail">暂无数据</div>
@@ -40,8 +26,14 @@
 </template>
 
 <script>
+import photograph from '@/components/photograph'
 import { getSignInTaskInfo, getSignInDetail, signIn } from '@/api/signin'
+import { takeFaceToken } from '@/api/user'
+
 export default {
+  components: {
+    photograph
+  },
   onLoad (options) {
     if (options.id) {
       this.signInTaskId = options.id
@@ -55,20 +47,20 @@ export default {
     this.isCamera = false
     this.getSignInDetail()
   },
-  components: {
+  onUnload () {
+    this.$store.dispatch('SetCamera', false)
   },
   data () {
     return {
       signInTaskId: undefined,
       isHave: false,
-      isCamera: false,
-      isViewState: false,
-      show: 1,
       detail: {},
       signInDetail: null,
-      homeworkTaskList: [],
-      signInTaskList: [],
-      src: ''
+      signInDate: {
+        signInTaskId: undefined,
+        longitude: undefined,
+        latitude: undefined
+      }
     }
   },
   computed: {
@@ -77,6 +69,24 @@ export default {
         return true
       }
       return false
+    },
+    signInTypeFilter () {
+      const { signInType } = this.detail
+      if (!signInType) {
+        return '(无)'
+      }
+      let text = ''
+      for (let i = 0; i < signInType.length; i++) {
+        if (text) {
+          text += '、'
+        }
+        if (signInType[i] === 1) {
+          text = text + '位置定位'
+        } else if (signInType[i] === 2) {
+          text = text + '脸部识别'
+        }
+      }
+      return text
     }
   },
   methods: {
@@ -104,65 +114,109 @@ export default {
         }
       })
     },
-    signIn () {
-      let signInDate = {
-        signInTaskId: this.signInTaskId,
-        longitude: undefined,
-        latitude: undefined
-      }
-      mpvue.getLocation({
-        type: 'gcj02',
-        success (res) {
-          console.log(res)
-          signInDate.longitude = res.longitude
-          signInDate.latitude = res.latitude
-          console.log(signInDate)
-          if (signInDate.signInTaskId && signInDate.longitude && signInDate.latitude) {
-            signIn(signInDate).then((data) => {
-              if (data.success === true) {
-                mpvue.showToast({
-                  title: '签到成功',
-                  duration: 1500,
-                  mask: true
-                })
-              } else {
-                mpvue.showToast({
-                  title: data.msg,
-                  icon: 'none',
-                  duration: 1500,
-                  mask: true
-                })
-              }
-            })
-          } else {
+    async signIn () {
+      this.signInDate.signInTaskId = this.signInTaskId
+      const { signInType } = this.detail
+      console.log(signInType)
+      for (let i = 0; i < signInType.length; i++) {
+        if (signInType[i] === 1) {
+          console.log(1)
+          await mpvue.getLocation({
+            type: 'gcj02',
+            success: (res) => {
+              console.log(res)
+              this.signInDate.longitude = res.longitude
+              this.signInDate.latitude = res.latitude
+              console.log(this.signInDate)
+            }
+          })
+          if (!(this.signInDate.longitude && this.signInDate.latitude)) {
             mpvue.showToast({
-              title: '签到参数不正确',
+              title: '位置获取失败',
+              icon: 'none',
+              duration: 1500,
+              mask: true
+            })
+            return
+          }
+        } else if (signInType[i] === 2) {
+          console.log(2)
+          this.$store.dispatch('SetCamera', true)
+          return
+        }
+      }
+      this.sumbitSignIn()
+    },
+    async confirmPhoto (imgPath) {
+      if (imgPath) {
+        mpvue.showLoading({
+          title: '识别中'
+        })
+        await takeFaceToken(imgPath).then((data) => {
+          console.log(data)
+          if (data.success === true) {
+            this.signInDate.faceToken = data.faceToken
+            console.log(this.signInDate)
+            this.sumbitSignIn()
+          } else {
+            mpvue.hideLoading()
+            mpvue.showToast({
+              title: '识别失败',
               icon: 'none',
               duration: 1500,
               mask: true
             })
           }
-        }
+        }).catch(() => {
+          mpvue.hideLoading()
+          mpvue.showToast({
+            title: '识别失败',
+            icon: 'none',
+            duration: 1500,
+            mask: true
+          })
+        })
+      } else {
+        mpvue.showToast({
+          title: '照片获取失败',
+          icon: 'none',
+          duration: 1500,
+          mask: true
+        })
+      }
+    },
+    sumbitSignIn () {
+      console.log('发送签到请求')
+      mpvue.hideLoading()
+      mpvue.showLoading({
+        title: '签到中'
       })
-      this.isCamera = true
-      console.log(this.isCamera)
-    },
-    takePhoto () {
-      const ctx = mpvue.createCameraContext()
-      ctx.takePhoto({
-        quality: 'high',
-        success: (res) => {
-          console.log(res)
-          this.src = res.tempImagePath
-          this.isViewState = true
+      signIn(this.signInDate).then((data) => {
+        mpvue.hideLoading()
+        if (data.success === true) {
+          mpvue.showToast({
+            title: '签到成功',
+            duration: 1500,
+            mask: true
+          })
+          this.getSignInDetail()
+        } else {
+          mpvue.showToast({
+            title: data.msg,
+            icon: 'none',
+            duration: 1500,
+            mask: true
+          })
         }
+      }).catch((data) => {
+        mpvue.hideLoading()
+        mpvue.showToast({
+          title: data.msg,
+          icon: 'none',
+          duration: 1500,
+          mask: true
+        })
       })
-    },
-    rePhoto () {
-      this.isViewState = false
-    },
-    confirmPhoto () {
-      this.isCamera = false
     }
   }
 }
