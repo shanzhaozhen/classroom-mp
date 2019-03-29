@@ -118,33 +118,35 @@ export default {
       this.signInDate.signInTaskId = this.signInTaskId
       const { signInType } = this.detail
       console.log(signInType)
-      for (let i = 0; i < signInType.length; i++) {
-        if (signInType[i] === 1) {
-          console.log(1)
-          await mpvue.getLocation({
-            type: 'gcj02',
-            success: (res) => {
-              console.log(res)
-              this.signInDate.longitude = res.longitude
-              this.signInDate.latitude = res.latitude
-              console.log(this.signInDate)
-            }
-          })
-          if (!(this.signInDate.longitude && this.signInDate.latitude)) {
-            mpvue.showToast({
-              title: '位置获取失败',
-              icon: 'none',
-              duration: 1500,
-              mask: true
-            })
-            return
+
+      if (signInType.indexOf(1)) {
+        console.log(1)
+        await mpvue.getLocation({
+          type: 'gcj02',
+          success: (res) => {
+            console.log(res)
+            this.signInDate.longitude = res.longitude
+            this.signInDate.latitude = res.latitude
+            console.log(this.signInDate)
           }
-        } else if (signInType[i] === 2) {
-          console.log(2)
-          this.$store.dispatch('SetCamera', true)
+        })
+        if (!(this.signInDate.longitude && this.signInDate.latitude)) {
+          mpvue.showToast({
+            title: '位置获取失败',
+            icon: 'none',
+            duration: 1500,
+            mask: true
+          })
           return
         }
       }
+
+      if (signInType.indexOf(2)) {
+        console.log(2)
+        this.$store.dispatch('SetCamera', true)
+        return
+      }
+
       this.sumbitSignIn()
     },
     async confirmPhoto (imgPath) {

@@ -74,6 +74,12 @@ export default {
       })
         .catch((error) => {
           console.log(error)
+          mpvue.showToast({
+            title: '签到失败',
+            icon: 'none',
+            duration: 3000,
+            mask: true
+          })
         })
     }
   }
