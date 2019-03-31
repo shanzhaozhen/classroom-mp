@@ -1,5 +1,5 @@
 <template>
-  <div class="addclassroom-container">
+  <div class="classroom-add-container">
     <div class="form-box">
       <div class="input-box">
         <span>作业内容：</span>
@@ -33,12 +33,24 @@ export default {
     }
   },
   onLoad (options) {
-    this.homeworkData.homeworkTaskId = options.id
-  },
-  onShow () {
     this.homeworkData.content = ''
     this.homeworkData.fileInfoId = null
     this.fileName = null
+    if (options.id) {
+      this.homeworkData.homeworkTaskId = options.id
+    } else {
+      mpvue.showToast({
+        title: '没有对应的作业任务',
+        icon: 'none',
+        duration: 1500,
+        mask: true
+      })
+      setTimeout(() => {
+        mpvue.navigateBack({
+          delta: 1
+        })
+      }, 1500)
+    }
   },
   methods: {
     createHomework () {
@@ -64,11 +76,19 @@ export default {
             }, 1500)
           } else {
             mpvue.showToast({
-              title: '提交失败',
+              title: data.msg,
+              icon: 'none',
               duration: 1500,
               mask: true
             })
           }
+        }).catch(() => {
+          mpvue.showToast({
+            title: '提交失败',
+            icon: 'none',
+            duration: 1500,
+            mask: true
+          })
         })
       }
     },
@@ -77,11 +97,9 @@ export default {
         count: 1,
         // type: 'file',
         success: (res) => {
-          console.log(res)
           // tempFilePath可以作为img标签的src属性显示图片
           const tempFilePaths = res.tempFiles
           uploadFile(tempFilePaths[0].path, tempFilePaths[0].name).then((data) => {
-            console.log(data)
             if (data.success === true) {
               this.fileName = tempFilePaths[0].name
               this.homeworkData.fileInfoId = data.fileInfoId
@@ -108,7 +126,7 @@ export default {
 
 <style>
 
-  .addclassroom-container {
+  .classroom-add-container {
     padding-top: 25rpx;
     width: 100%;
   }

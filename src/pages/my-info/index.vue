@@ -1,5 +1,5 @@
 <template>
-  <div class="myinfo-container">
+  <div class="my-info-container">
     <div class="form-box" v-if="userInfo != null">
       <div class="input-box">
         <div class="label-name">用户名</div>
@@ -15,7 +15,7 @@
       </div>
       <div class="input-box">
         <div class="label-name">脸谱</div>
-        <div class="label-value" @click="toPage('../preadd/main')">更新脸谱</div>
+        <div class="label-value" @click="toPage('../pre-add/main')">更新脸谱</div>
       </div>
       <div class="input-box">
         <div class="label-name">微信账号</div>
@@ -94,7 +94,6 @@ export default {
       })
     },
     unbinding () {
-      console.log()
       this.$store.dispatch('Unbinding').then((data) => {
         if (data.success === true) {
           mpvue.showToast({
@@ -123,7 +122,7 @@ export default {
     background-color: #eeeeee;
   }
 
-  .myinfo-container {
+  .my-info-container {
     padding-top: 25rpx;
     width: 100%;
   }

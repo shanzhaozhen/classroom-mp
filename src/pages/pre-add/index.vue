@@ -1,5 +1,5 @@
 <template>
-  <div class="addclassroom-container">
+  <div class="classroom-add-container">
     <div class="form-box">
       <div class="input-box">
         <span>真实姓名：</span>
@@ -33,7 +33,6 @@ export default {
     this.$store.dispatch('SetCamera', false)
   },
   onShow () {
-    console.log(this.$store)
     this.isCamera = false
     this.isViewState = false
     this.formData.faceToken = this.faceToken
@@ -64,7 +63,11 @@ export default {
   methods: {
     sumbitFaceToken () {
       if (this.formData.faceToken && this.formData.fullName && this.formData.number) {
+        mpvue.showLoading({
+          title: '提交中'
+        })
         updateFaceToken(this.formData).then((data) => {
+          mpvue.hideLoading()
           if (data.success === true) {
             this.$store.dispatch('GetUserInfo')
             mpvue.showToast({
@@ -78,6 +81,7 @@ export default {
               })
             }, 1500)
           } else {
+            mpvue.hideLoading()
             mpvue.showToast({
               title: '录入失败',
               icon: 'none',
@@ -135,7 +139,7 @@ export default {
 
 <style>
 
-  .addclassroom-container {
+  .classroom-add-container {
     padding-top: 25rpx;
     width: 100%;
   }

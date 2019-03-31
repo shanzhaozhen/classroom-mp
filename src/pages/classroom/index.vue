@@ -9,7 +9,7 @@
           </div>
         </div>
         <div class="classroom-img bg-aqua">
-          <img src="/static/icon/right-circle-write.png">
+          <img src="/static/icon/select.png">
         </div>
         <div class="classroom-date">创建时间：{{item.createdDate}}</div>
       </div>
@@ -43,7 +43,6 @@ export default {
   methods: {
     getList () {
       myClassroom().then((data) => {
-        console.log(data)
         this.list = data
       })
     },
@@ -51,7 +50,7 @@ export default {
       mpvue.navigateTo({ url })
     },
     toDetailPage (id) {
-      const url = '../classroomdetail/main?id=' + id
+      const url = '../classroom-detail/main?id=' + id
       this.toPage(url)
     }
   }

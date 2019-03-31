@@ -10,9 +10,10 @@
         <div v-for="(item, index) in list" :key="index">
           <div class="item">
             <div class="user-info">
-              <img :src="item.headmasterInfo.avatarUrl">
-              <div class="username">{{item.headmasterInfo.nickName}}</div>
-              <div class="join" @click="joinIn(item.id)">马上加入</div>
+              <img :src="item.createrInfo.avatarUrl">
+              <div class="username">{{item.createrInfo.nickName}}</div>
+              <div class="joined" v-if="item.joinState">已加入</div>
+              <div class="join" @click="joinIn(item.id)" v-else>申请加入</div>
             </div>
             <div class="item-content">
               <div class="class-name">{{item.name}}</div>
@@ -51,7 +52,7 @@ export default {
       'fullName',
       'number'])
   },
-  onShow () {
+  onLoad () {
     this.getClassroomDate()
   },
   methods: {
@@ -65,11 +66,15 @@ export default {
     },
     joinIn (id) {
       if (this.faceToken && this.fullName && this.number) {
+        mpvue.showLoading({
+          title: '加入中'
+        })
         joinClassroom(id).then((data) => {
-          console.log(data)
+          mpvue.hideLoading()
+          this.getClassroomDate()
           if (data.success === true) {
             mpvue.showToast({
-              title: '加入成功',
+              title: '申请成功',
               duration: 3000,
               mask: true
             })
@@ -83,6 +88,7 @@ export default {
           }
         })
       } else {
+        mpvue.hideLoading()
         mpvue.showToast({
           title: '个人信息不全或者未录入脸谱',
           icon: 'none',
@@ -90,7 +96,7 @@ export default {
           mask: true
         })
         setTimeout(() => {
-          this.toPage('../preadd/main')
+          this.toPage('../pre-add/main')
         }, 3000)
       }
     }
@@ -196,6 +202,16 @@ export default {
     right: 30rpx;
     border: 1rpx solid #ff851b;
     color: #ff851b;
+    font-size: 25rpx;
+    padding: 3rpx 10rpx;
+  }
+
+  .joined {
+    position: absolute;
+    top: 50rpx;
+    right: 30rpx;
+    border: 1rpx solid #7c7c7c;
+    color: #7c7c7c;
     font-size: 25rpx;
     padding: 3rpx 10rpx;
   }

@@ -5,7 +5,7 @@
       <div class="classroom-desc">{{detail.outline}}</div>
       <div class="classroom-desc">开始时间：{{detail.startDate}}</div>
       <div class="classroom-desc">结束时间：{{detail.endDate}}</div>
-      <div class="classroom-desc">签到方式：{{signInTypeFilter}}</div>
+      <div class="classroom-desc">签到方式：{{signTypeFilter}}</div>
       <div class="classroom-desc">签到地点：{{detail.address}}</div>
       <div class="classroom-desc">签到范围：{{detail.scope + '米'}}</div>
       <div class="splice-line"></div>
@@ -13,9 +13,9 @@
         <div class="create-date">创建于：{{detail.createdDate}}</div>
       </div>
     </div>
-    <div class="sumbit-signin">
-      <button class="back-btn bg-purple" disabled v-if="isSignIn">已签到</button>
-      <button class="back-btn bg-purple" @click="signIn" v-else>马上签到</button>
+    <div class="sumbit-sign">
+      <button class="back-btn bg-purple" disabled v-if="isSign">已签到</button>
+      <button class="back-btn bg-purple" @click="sign" v-else>马上签到</button>
     </div>
     <photograph @confirmEvent="confirmPhoto"></photograph>
   </div>
@@ -27,7 +27,7 @@
 
 <script>
 import photograph from '@/components/photograph'
-import { getSignInTaskInfo, getSignInDetail, signIn } from '@/api/signin'
+import { getSignTaskInfo, getSignsBySignTaskId, signIn } from '@/api/sign'
 import { takeFaceToken } from '@/api/user'
 
 export default {
@@ -35,54 +35,55 @@ export default {
     photograph
   },
   onLoad (options) {
+    this.clearData()
     if (options.id) {
-      this.signInTaskId = options.id
-      this.getSignInTaskInfo()
-      this.getSignInDetail()
+      this.signTaskId = options.id
+      this.getSignTaskInfo()
+      this.getSignsBySignTaskId()
     } else {
       this.isHave = false
     }
   },
   onShow () {
     this.isCamera = false
-    this.getSignInDetail()
+    this.getSignsBySignTaskId()
   },
   onUnload () {
     this.$store.dispatch('SetCamera', false)
   },
   data () {
     return {
-      signInTaskId: undefined,
+      signTaskId: undefined,
       isHave: false,
       detail: {},
-      signInDetail: null,
-      signInDate: {
-        signInTaskId: undefined,
+      signDetail: null,
+      signDate: {
+        signTaskId: undefined,
         longitude: undefined,
         latitude: undefined
       }
     }
   },
   computed: {
-    isSignIn () {
-      if (this.signInDetail !== null) {
+    isSign () {
+      if (this.signDetail !== null) {
         return true
       }
       return false
     },
-    signInTypeFilter () {
-      const { signInType } = this.detail
-      if (!signInType) {
+    signTypeFilter () {
+      const { signType } = this.detail
+      if (!signType) {
         return '(无)'
       }
       let text = ''
-      for (let i = 0; i < signInType.length; i++) {
+      for (let i = 0; i < signType.length; i++) {
         if (text) {
           text += '、'
         }
-        if (signInType[i] === 1) {
+        if (signType[i] === 1) {
           text = text + '位置定位'
-        } else if (signInType[i] === 2) {
+        } else if (signType[i] === 2) {
           text = text + '脸部识别'
         }
       }
@@ -90,6 +91,17 @@ export default {
     }
   },
   methods: {
+    clearData () {
+      this.signTaskId = undefined
+      this.isHave = false
+      this.detail = {}
+      this.signDetail = null
+      this.signDate = {
+        signTaskId: undefined,
+        longitude: undefined,
+        latitude: undefined
+      }
+    },
     toBack () {
       mpvue.navigateBack({
         delta: 1
@@ -98,39 +110,34 @@ export default {
     toPage (url) {
       mpvue.navigateTo({ url })
     },
-    getSignInTaskInfo () {
-      getSignInTaskInfo(this.signInTaskId).then((data) => {
+    async getSignTaskInfo () {
+      await getSignTaskInfo(this.signTaskId).then((data) => {
         this.detail = data
         this.isHave = true
       })
     },
-    getSignInDetail () {
-      getSignInDetail(this.signInTaskId).then((res) => {
-        console.log(res)
+    async getSignsBySignTaskId () {
+      await getSignsBySignTaskId(this.signTaskId).then((res) => {
         if (res.success === true) {
-          this.signInDetail = res.data
+          this.signDetail = res.data
         } else {
-          this.signInDetail = null
+          this.signDetail = null
         }
       })
     },
-    async signIn () {
-      this.signInDate.signInTaskId = this.signInTaskId
-      const { signInType } = this.detail
-      console.log(signInType)
+    async sign () {
+      this.signDate.signTaskId = this.signTaskId
+      const { signType } = this.detail
 
-      if (signInType.indexOf(1)) {
-        console.log(1)
+      if (signType.indexOf(1)) {
         await mpvue.getLocation({
           type: 'gcj02',
           success: (res) => {
-            console.log(res)
-            this.signInDate.longitude = res.longitude
-            this.signInDate.latitude = res.latitude
-            console.log(this.signInDate)
+            this.signDate.longitude = res.longitude
+            this.signDate.latitude = res.latitude
           }
         })
-        if (!(this.signInDate.longitude && this.signInDate.latitude)) {
+        if (!(this.signDate.longitude && this.signDate.latitude)) {
           mpvue.showToast({
             title: '位置获取失败',
             icon: 'none',
@@ -141,13 +148,12 @@ export default {
         }
       }
 
-      if (signInType.indexOf(2)) {
-        console.log(2)
+      if (signType.indexOf(2)) {
         this.$store.dispatch('SetCamera', true)
         return
       }
 
-      this.sumbitSignIn()
+      this.sumbitSign()
     },
     async confirmPhoto (imgPath) {
       if (imgPath) {
@@ -155,11 +161,9 @@ export default {
           title: '识别中'
         })
         await takeFaceToken(imgPath).then((data) => {
-          console.log(data)
           if (data.success === true) {
-            this.signInDate.faceToken = data.faceToken
-            console.log(this.signInDate)
-            this.sumbitSignIn()
+            this.signDate.faceToken = data.faceToken
+            this.sumbitSign()
           } else {
             mpvue.hideLoading()
             mpvue.showToast({
@@ -187,13 +191,12 @@ export default {
         })
       }
     },
-    sumbitSignIn () {
-      console.log('发送签到请求')
+    sumbitSign () {
       mpvue.hideLoading()
       mpvue.showLoading({
         title: '签到中'
       })
-      signIn(this.signInDate).then((data) => {
+      signIn(this.signDate).then((data) => {
         mpvue.hideLoading()
         if (data.success === true) {
           mpvue.showToast({
@@ -201,7 +204,7 @@ export default {
             duration: 1500,
             mask: true
           })
-          this.getSignInDetail()
+          this.getSignsBySignTaskId()
         } else {
           mpvue.showToast({
             title: data.msg,
@@ -306,7 +309,7 @@ export default {
     color: #999999;
   }
 
-  .sumbit-signin {
+  .sumbit-sign {
     margin-top: 50rpx;
   }
 

@@ -52,7 +52,6 @@ export default {
       ctx.takePhoto({
         quality: 'high',
         success: (res) => {
-          console.log(res)
           this.imgPath = res.tempImagePath
           this.isViewState = true
         }

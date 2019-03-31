@@ -1,16 +1,16 @@
 {
   "pages": [
     "pages/index/main",
-    "pages/addclassroom/main",
+    "pages/classroom-add/main",
     "pages/search/main",
-    "pages/preadd/main",
+    "pages/pre-add/main",
     "pages/classroom/main",
-    "pages/classroomdetail/main",
-    "pages/homeworkdetail/main",
-    "pages/addhomework/main",
-    "pages/signindetail/main",
+    "pages/classroom-detail/main",
+    "pages/homework-detail/main",
+    "pages/homework-add/main",
+    "pages/sign-detail/main",
     "pages/my/main",
-    "pages/myinfo/main",
+    "pages/my-info/main",
     "pages/login/main",
     "pages/register/main"
   ],
@@ -39,13 +39,13 @@
     }, {
       "text": "班级",
       "pagePath": "pages/classroom/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
+      "iconPath": "static/tabs/flag.png",
+      "selectedIconPath": "static/tabs/flag-active.png"
     }, {
       "text": "我的",
       "pagePath": "pages/my/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
+      "iconPath": "static/tabs/user.png",
+      "selectedIconPath": "static/tabs/user-active.png"
     }],
 
     "items": [{
@@ -56,13 +56,13 @@
     }, {
       "text": "班级",
       "pagePath": "pages/classroom/main",
-      "iconPath": "static/tabs/orders.png",
-      "selectedIconPath": "static/tabs/orders-active.png"
+      "iconPath": "static/tabs/flag.png",
+      "selectedIconPath": "static/tabs/flag-active.png"
     }, {
       "name": "我的",
       "pagePath": "pages/my/main",
-      "icon": "static/tabs/orders.png",
-      "activeIcon": "static/tabs/orders-active.png"
+      "icon": "static/tabs/user.png",
+      "activeIcon": "static/tabs/user-active.png"
     }],
     "position": "bottom"
   }

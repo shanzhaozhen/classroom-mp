@@ -6,9 +6,9 @@
       <div class="splice-line"></div>
       <div class="user-info">
         <div class="avatar">
-          <img :src="detail.headmasterInfo.avatarUrl">
+          <img :src="detail.createrInfo.avatarUrl">
         </div>
-        <span class="username">{{detail.headmasterInfo.nickName}}</span>
+        <span class="username">{{detail.createrInfo.nickName}}</span>
         <div class="create-date">创建于：{{detail.createdDate}}</div>
       </div>
     </div>
@@ -19,7 +19,7 @@
       </div>
       <div class="classroom-homework" v-show="show === 1">
         <div v-if="homeworkTaskList.length > 0">
-          <div class="homework-item" v-for="(homeworkTask, index) in homeworkTaskList" :key="index" @click="toPage('../homeworkdetail/main?id=' + homeworkTask.id)">
+          <div class="homework-item" v-for="(homeworkTask, index) in homeworkTaskList" :key="index" @click="toPage('../homework-detail/main?id=' + homeworkTask.id)">
             <div class="homework-content">
               <div class="homework-name">{{homeworkTask.name}}</div>
               <div class="homework-desc">{{homeworkTask.outline}}</div>
@@ -33,15 +33,15 @@
           <div class="no-homework">暂无作业任务</div>
         </div>
       </div>
-      <div class="classroom-signin" v-show="show === 2">
-        <div v-if="signInTaskList.length > 0">
-          <div class="homework-item" v-for="(signInTask, index) in signInTaskList" :key="index" @click="toPage('../signindetail/main?id=' + signInTask.id)">
+      <div class="classroom-sign" v-show="show === 2">
+        <div v-if="signTaskList.length > 0">
+          <div class="homework-item" v-for="(signTask, index) in signTaskList" :key="index" @click="toPage('../sign-detail/main?id=' + signTask.id)">
             <div class="homework-content">
-              <div class="homework-name">{{signInTask.name}}</div>
-              <div class="homework-desc">{{signInTask.outline}}</div>
+              <div class="homework-name">{{signTask.name}}</div>
+              <div class="homework-desc">{{signTask.outline}}</div>
             </div>
             <div class="homework-dete">
-              完成时间：{{signInTask.startDate}}-{{signInTask.endDate}}
+              完成时间：{{signTask.startDate}}-{{signTask.endDate}}
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@
 <script>
 import { getClassroomInfo } from '@/api/classroom'
 import { getHomeworkTask } from '@/api/homework'
-import { getSignInTask } from '@/api/signin'
+import { getSignTask } from '@/api/sign'
 export default {
   onLoad (options) {
     if (options.id) {
@@ -69,7 +69,7 @@ export default {
         this.detail = data
         this.isHave = true
         this.getHomeworkTaskDate()
-        this.getSignInTaskDate()
+        this.getSignTaskDate()
       })
     } else {
       this.isHave = false
@@ -84,7 +84,7 @@ export default {
       show: 1,
       detail: {},
       homeworkTaskList: [],
-      signInTaskList: []
+      signTaskList: []
     }
   },
   computed: {
@@ -105,20 +105,19 @@ export default {
     getHomeworkTaskDate () {
       if (this.classroomId) {
         getHomeworkTask(this.classroomId).then((data) => {
-          console.log(data)
           this.homeworkTaskList = data
         })
       } else {
         this.homeworkTaskList = []
       }
     },
-    getSignInTaskDate () {
+    getSignTaskDate () {
       if (this.classroomId) {
-        getSignInTask(this.classroomId).then((data) => {
-          this.signInTaskList = data
+        getSignTask(this.classroomId).then((data) => {
+          this.signTaskList = data
         })
       } else {
-        this.signInTaskList = []
+        this.signTaskList = []
       }
     }
   }
@@ -210,7 +209,7 @@ export default {
     color: #999999;
   }
 
-  .classroom-homework, .classroom-signin {
+  .classroom-homework, .classroom-sign {
     background-color: #eeeeee;
   }
 

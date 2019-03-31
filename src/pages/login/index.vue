@@ -35,9 +35,14 @@ export default {
       mpvue.navigateTo({ url })
     },
     login () {
+      mpvue.showLoading({
+        title: '登陆中'
+      })
       this.$store.dispatch('Login', this.loginForm).then((data) => {
+        mpvue.hideLoading()
         this.loginSuccess(data)
       }).catch((error) => {
+        mpvue.hideLoading()
         mpvue.showToast({
           title: error.msg,
           icon: 'none',
@@ -47,15 +52,20 @@ export default {
       })
     },
     getWechatUserInfo (data) {
+      mpvue.showLoading({
+        title: '登陆中'
+      })
       if (data.mp.detail.rawData) {
         this.$store.dispatch('SetWechatUserInfo', data.mp.detail.userInfo)
         mpvue.login({
           success: (res) => {
             if (res.code) {
               this.$store.dispatch('WechatLogin', res.code).then(() => {
+                mpvue.hideLoading()
                 this.loginSuccess()
               })
                 .catch((error) => {
+                  mpvue.hideLoading()
                   mpvue.showToast({
                     title: error.msg,
                     icon: 'none',
@@ -64,6 +74,7 @@ export default {
                   })
                 })
             } else {
+              mpvue.hideLoading()
               mpvue.showToast({
                 title: '登录失败',
                 icon: 'none',
@@ -74,6 +85,7 @@ export default {
           }
         })
       } else {
+        mpvue.hideLoading()
         mpvue.showToast({
           title: '获取用户数据失败',
           icon: 'none',

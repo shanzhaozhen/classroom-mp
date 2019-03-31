@@ -5,7 +5,7 @@
         <img :src="wechatUserInfo.avatarUrl">
       </div>
       <div class="username">{{wechatUserInfo.nickName}}</div>
-      <button class="modify-btn" @click="toPage('../myinfo/main')">修改个人资料</button>
+      <button class="modify-btn" @click="toPage('../my-info/main')">修改个人资料</button>
     </div>
     <div class="user-info" v-else>
       <div class="avatar">

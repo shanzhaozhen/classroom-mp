@@ -1,5 +1,5 @@
 <template>
-  <div class="addclassroom-container">
+  <div class="classroom-add-container">
     <div class="form-box">
       <div class="input-box">
         <span>班级名称：</span>
@@ -45,15 +45,12 @@ export default {
       this.classroom.announce = e.target.value
     },
     creatClassroom () {
-      if (!this.classroom.name || !this.classroom.outline) {
-        mpvue.showToast({
-          title: '字段不能为空',
-          icon: 'none',
-          duration: 1500,
-          mask: true
+      if (this.classroom.name && this.classroom.outline) {
+        mpvue.showLoading({
+          title: '加入中'
         })
-      } else {
         createClassroom(this.classroom).then((data) => {
+          mpvue.hideLoading()
           if (data.success === true) {
             mpvue.showToast({
               title: data.msg,
@@ -66,12 +63,20 @@ export default {
               })
             }, 1500)
           } else {
+            mpvue.hideLoading()
             mpvue.showToast({
               title: '创建失败',
               duration: 1500,
               mask: true
             })
           }
+        })
+      } else {
+        mpvue.showToast({
+          title: '字段不能为空',
+          icon: 'none',
+          duration: 1500,
+          mask: true
         })
       }
     }
@@ -81,7 +86,7 @@ export default {
 
 <style>
 
-  .addclassroom-container {
+  .classroom-add-container {
     padding-top: 25rpx;
     width: 100%;
   }

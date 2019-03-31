@@ -1,9 +1,9 @@
 <template>
   <div class="index-container">
     <div class="card-list">
-      <div class="card-item" @click="toPageIsLogin('../addclassroom/main')">
+      <div class="card-item" @click="toPageIsLogin('../classroom-add/main')">
         <div class="item-img bg-maroon">
-          <img src="/static/icon/check-circle.png">
+          <img src="/static/icon/team.png">
         </div>
         <div class="item-content">
           <p class="title-big">创建一个新班级<img src="/static/icon/right-circle-black.png"></p>
@@ -12,7 +12,7 @@
       </div>
       <div class="card-item" @click="toPageIsLogin('../search/main')">
         <div class="item-img bg-aqua">
-          <img src="/static/icon/check-circle.png">
+          <img src="/static/icon/addteam.png">
         </div>
         <div class="item-content">
           <p class="title-big">加入一个班级<img src="/static/icon/right-circle-black.png"></p>
@@ -22,10 +22,9 @@
     </div>
     <div class="more-pc">更多功能（请使用PC端）</div>
     <div class="card-list">
-      <!--<div class="card-item" @click="alertTips">-->
       <div class="card-item" @click="alertTips">
         <div class="item-img bg-orange">
-          <img src="/static/icon/check-circle.png">
+          <img src="/static/icon/attachment.png">
         </div>
         <div class="item-content">
           <p class="title-big">发布一份作业任务<img src="/static/icon/right-circle-black.png"></p>
@@ -34,7 +33,7 @@
       </div>
       <div class="card-item" @click="alertTips">
         <div class="item-img bg-purple">
-          <img src="/static/icon/check-circle.png">
+          <img src="/static/icon/notification.png">
         </div>
         <div class="item-content">
           <p class="title-big">发布一次考勤任务<img src="/static/icon/right-circle-black.png"></p>

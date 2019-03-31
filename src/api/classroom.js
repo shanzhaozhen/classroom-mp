@@ -13,9 +13,9 @@ export function searchClassroom (keyword) {
 }
 
 export function getClassroomInfo (id) {
-  return http('admin/classroom/info/' + id, 'get')
+  return http(`admin/classroom/${id}`, 'get')
 }
 
-export function joinClassroom (classId) {
-  return http('admin/student/join/' + classId, 'post')
+export function joinClassroom (classroomId) {
+  return http('admin/student-temp', 'post', { classroomId })
 }

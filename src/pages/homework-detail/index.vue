@@ -12,7 +12,7 @@
     </div>
     <div class="sumbit-homework">
       <button class="back-btn bg-purple" disabled v-if="isSumbit">已交作业</button>
-      <button class="back-btn bg-purple" @click="toPage('../addhomework/main?id=' + detail.id)" v-else>交作业</button>
+      <button class="back-btn bg-purple" @click="toPage('../homework-add/main?id=' + detail.id)" v-else>交作业</button>
     </div>
   </div>
   <div v-else>
@@ -22,31 +22,28 @@
 </template>
 
 <script>
-import { getHomeworkTaskInfo, getHomeworkDetail } from '@/api/homework'
+import { getHomeworkTaskInfo, getHomeworksByHomeworkTaskId } from '@/api/homework'
 export default {
   onLoad (options) {
+    this.clearData()
     if (options.id) {
       this.homeworkTaskId = options.id
       this.getHomeworkTaskInfo()
-      this.getHomeworkDetail()
     } else {
       this.isHave = false
     }
   },
   onShow () {
-    this.getHomeworkDetail()
-  },
-  components: {
+    this.getHomeworksByHomeworkTaskId()
   },
   data () {
     return {
       homeworkTaskId: undefined,
       isHave: false,
-      show: 1,
       detail: {},
       homeworkDetail: null,
       homeworkTaskList: [],
-      signInTaskList: []
+      signTaskList: []
     }
   },
   computed: {
@@ -58,6 +55,14 @@ export default {
     }
   },
   methods: {
+    clearData () {
+      this.homeworkTaskId = undefined
+      this.isHave = false
+      this.detail = {}
+      this.homeworkDetail = null
+      this.homeworkTaskList = []
+      this.signTaskList = []
+    },
     toBack () {
       mpvue.navigateBack({
         delta: 1
@@ -66,15 +71,14 @@ export default {
     toPage (url) {
       mpvue.navigateTo({ url })
     },
-    getHomeworkTaskInfo () {
-      getHomeworkTaskInfo(this.homeworkTaskId).then((data) => {
+    async getHomeworkTaskInfo () {
+      await getHomeworkTaskInfo(this.homeworkTaskId).then((data) => {
         this.detail = data
         this.isHave = true
       })
     },
-    getHomeworkDetail () {
-      getHomeworkDetail(this.homeworkTaskId).then((res) => {
-        console.log(res)
+    async getHomeworksByHomeworkTaskId () {
+      await getHomeworksByHomeworkTaskId(this.homeworkTaskId).then((res) => {
         if (res.success === true) {
           this.homeworkDetail = res.data
         } else {
