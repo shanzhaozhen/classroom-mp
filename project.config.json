@@ -1,17 +1,19 @@
 {
 	"description": "项目配置文件。",
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": false,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
+		"nodeModules": true,
 		"autoAudits": false
 	},
 	"miniprogramRoot": "dist/wx/",
 	"compileType": "miniprogram",
 	"appid": "wx9fb2dacbf0e32a67",
 	"projectname": "classroom-mp",
+	"libVersion": "2.6.5",
 	"condition": {
 		"search": {
 			"current": -1,

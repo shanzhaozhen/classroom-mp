@@ -129,7 +129,7 @@ export default {
       this.signDate.signTaskId = this.signTaskId
       const { signType } = this.detail
 
-      if (signType.indexOf(1)) {
+      if (signType.indexOf(1) !== -1) {
         await mpvue.getLocation({
           type: 'gcj02',
           success: (res) => {
@@ -148,7 +148,7 @@ export default {
         }
       }
 
-      if (signType.indexOf(2)) {
+      if (signType.indexOf(2) !== -1) {
         this.$store.dispatch('SetCamera', true)
         return
       }

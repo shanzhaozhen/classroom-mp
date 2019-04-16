@@ -1,6 +1,6 @@
 import store from '@/store'
 
-const api = 'http://god.ngrok.xiaomiqiu.cn/classroom'
+const api = 'https://www.shanzhaozhen.top/api/classroom'
 
 const TOKEN_HEADER = 'Class-Token'
 
